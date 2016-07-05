@@ -143,6 +143,9 @@ static const struct
     { darwin_scancode_table, SDL_arraysize(darwin_scancode_table) },
     { xfree86_scancode_table, SDL_arraysize(xfree86_scancode_table) },
     { xfree86_scancode_table2, SDL_arraysize(xfree86_scancode_table2) },
+#ifdef PANDORA
+    { pandora_scancode_table, SDL_arraysize(pandora_scancode_table) },
+#endif
 };
 /* *INDENT-OFF* */
 

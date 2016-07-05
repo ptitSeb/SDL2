@@ -198,6 +198,9 @@ ShouldUseTextureFramebuffer()
     /* Properly configured OpenGL drivers are faster than MIT-SHM */
 #if SDL_VIDEO_OPENGL
     /* Ugh, find a way to cache this value! */
+#ifdef PANDORA
+    return SDL_TRUE;
+#else
     {
         SDL_Window *window;
         SDL_GLContext context;
@@ -226,6 +229,7 @@ ShouldUseTextureFramebuffer()
         }
         return hasAcceleratedOpenGL;
     }
+#endif
 #elif SDL_VIDEO_OPENGL_ES || SDL_VIDEO_OPENGL_ES2
     /* Let's be optimistic about this! */
     return SDL_TRUE;
@@ -2275,7 +2279,18 @@ SDL_SetWindowGammaRamp(SDL_Window * window, const Uint16 * red,
                                             const Uint16 * green,
                                             const Uint16 * blue)
 {
+#ifdef PANDORA
+    float new_gamma;
+    char tmp_gamma[51];
+#endif
     CHECK_WINDOW_MAGIC(window, -1);
+
+#ifdef PANDORA
+    if(red[128])
+        new_gamma = log(0.5)/log(red[128]/65535.0);
+    else
+        new_gamma = 0.0f;
+#endif
 
     if (!_this->SetWindowGammaRamp) {
         return SDL_Unsupported();
@@ -2297,6 +2312,15 @@ SDL_SetWindowGammaRamp(SDL_Window * window, const Uint16 * red,
     if (blue) {
         SDL_memcpy(&window->gamma[2*256], blue, 256*sizeof(Uint16));
     }
+#ifdef PANDORA
+
+    if(new_gamma!=0.0f)
+     snprintf(tmp_gamma, 50,"sudo /usr/pandora/scripts/op_gamma.sh %.2f", new_gamma);
+    else
+     snprintf(tmp_gamma, 50,"sudo /usr/pandora/scripts/op_gamma.sh 0");
+    system(tmp_gamma);
+
+#endif
     if (window->flags & SDL_WINDOW_INPUT_FOCUS) {
         return _this->SetWindowGammaRamp(_this, window, window->gamma);
     } else {
@@ -2662,6 +2686,10 @@ SDL_VideoQuit(void)
     if (!_this) {
         return;
     }
+
+#ifdef PANDORA
+    system("sudo /usr/pandora/scripts/op_gamma.sh 0");
+#endif
 
     /* Halt event processing before doing anything else */
     SDL_TouchQuit();

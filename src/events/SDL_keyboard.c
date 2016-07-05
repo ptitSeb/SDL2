@@ -672,7 +672,7 @@ SDL_SendKeyboardKey(Uint8 state, SDL_Scancode scancode)
         return 0;
     }
 #ifdef DEBUG_KEYBOARD
-    printf("The '%s' key has been %s\n", SDL_GetScancodeName(scancode),
+    printf("The '%s' (0x%x/0x%0x) key has been %s\n", SDL_GetScancodeName(scancode), scancode, keyboard->keymap[scancode],
            state == SDL_PRESSED ? "pressed" : "released");
 #endif
 

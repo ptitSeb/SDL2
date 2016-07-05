@@ -89,9 +89,9 @@ static const char rcsid[] =
 #include "math_private.h"
 
 #ifdef __STDC__
-static const double one = 1.0, tiny = 1.0e-300;
+static const double one = 1.0, tiny = 1.0e-300l;
 #else
-static double one = 1.0, tiny = 1.0e-300;
+static double one = 1.0, tiny = 1.0e-300l;
 #endif
 
 #ifdef __STDC__

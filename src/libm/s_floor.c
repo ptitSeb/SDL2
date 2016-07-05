@@ -28,9 +28,9 @@ static const char rcsid[] =
 #include "math_private.h"
 
 #ifdef __STDC__
-static const double huge_val = 1.0e300;
+static const double huge_val = 1.0e300l;
 #else
-static double huge_val = 1.0e300;
+static double huge_val = 1.0e300l;
 #endif
 
 libm_hidden_proto(floor)

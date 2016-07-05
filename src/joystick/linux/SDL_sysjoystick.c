@@ -88,6 +88,7 @@ IsJoystick(int fd, char *namebuf, const size_t namebuflen, SDL_JoystickGUID *gui
     struct input_id inpid;
     Uint16 *guid16 = (Uint16 *) ((char *) &guid->data);
 
+#ifndef PANDORA
 #if !SDL_USE_LIBUDEV
     /* When udev is enabled we only get joystick devices here, so there's no need to test them */
     unsigned long evbit[NBITS(EV_MAX)] = { 0 };
@@ -104,6 +105,7 @@ IsJoystick(int fd, char *namebuf, const size_t namebuflen, SDL_JoystickGUID *gui
           test_bit(ABS_X, absbit) && test_bit(ABS_Y, absbit))) {
         return 0;
     }
+#endif
 #endif
 
     if (ioctl(fd, EVIOCGNAME(namebuflen), namebuf) < 0) {
@@ -315,6 +317,72 @@ MaybeRemoveDevice(const char *path)
 }
 #endif
 
+#ifdef PANDORA
+static int
+isPandoraNub(const char* path)
+{
+    int fd = -1;
+    int numaxis = 0;
+    char namebuf[128];
+    int i;
+    unsigned long keybit[NBITS(KEY_MAX)] = { 0 };
+    unsigned long absbit[NBITS(ABS_MAX)] = { 0 };
+    unsigned long relbit[NBITS(REL_MAX)] = { 0 };
+
+    fd = open(path, O_RDONLY, 0);
+    // openable ?
+    if (fd < 0) {
+        return -1;
+    }
+    if (ioctl(fd, EVIOCGNAME(sizeof(namebuf)), namebuf) < 0) {
+        close(fd);
+        return 0;
+    }
+    // check if name start wth nub
+    if (namebuf[0]!='n' || namebuf[1]!='u' || namebuf[2]!='b') {
+        close(fd);
+        return 0;
+    }
+    // check if there are 2 axis (there are 0 if nub is not in absolute mode)
+    if ((ioctl(fd, EVIOCGBIT(EV_KEY, sizeof(keybit)), keybit) >= 0) &&
+        (ioctl(fd, EVIOCGBIT(EV_ABS, sizeof(absbit)), absbit) >= 0) &&
+        (ioctl(fd, EVIOCGBIT(EV_REL, sizeof(relbit)), relbit) >= 0)) {
+            for (i = 0; i < ABS_MISC; ++i) {
+            /* Skip hats */
+            if (i == ABS_HAT0X) {
+                i = ABS_HAT3Y;
+                continue;
+            }
+            if (test_bit(i, absbit)) {
+                struct input_absinfo absinfo;
+
+                if (ioctl(fd, EVIOCGABS(i), &absinfo) < 0) {
+                    continue;
+                }
+                numaxis++;
+            }
+        }
+    }
+    close(fd);
+    return (numaxis==2)?1:0;
+}
+
+static int
+JoystickInitPandoraNubs(void)
+{
+    int i;
+    char path[PATH_MAX];
+
+    for (i = 0; i < 32; i++) {
+        SDL_snprintf(path, SDL_arraysize(path), "/dev/input/event%d", i);
+        if (isPandoraNub(path)>0)
+            MaybeAddDevice(path);
+    }
+
+    return numjoysticks;
+}
+#endif
+
 static int
 JoystickInitWithoutUdev(void)
 {
@@ -374,7 +442,11 @@ SDL_SYS_JoystickInit(void)
     }
 
 #if SDL_USE_LIBUDEV
+#ifdef PANDORA
+    return JoystickInitWithUdev() + JoystickInitPandoraNubs();
+#else
     return JoystickInitWithUdev();
+#endif
 #endif
 
     return JoystickInitWithoutUdev();

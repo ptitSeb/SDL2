@@ -267,6 +267,20 @@ X11_CreateDevice(int devindex)
     device->GL_GetSwapInterval = X11_GL_GetSwapInterval;
     device->GL_SwapWindow = X11_GL_SwapWindow;
     device->GL_DeleteContext = X11_GL_DeleteContext;
+#if SDL_VIDEO_OPENGL_EGL
+    if (SDL_getenv("SDL_VIDEO_GLES2")) {
+        device->GL_LoadLibrary = X11_GLES_LoadLibrary;
+        device->GL_GetProcAddress = X11_GLES_GetProcAddress;
+        device->GL_UnloadLibrary = X11_GLES_UnloadLibrary;
+        device->GL_CreateContext = X11_GLES_CreateContext;
+        device->GL_MakeCurrent = X11_GLES_MakeCurrent;
+        device->GL_SetSwapInterval = X11_GLES_SetSwapInterval;
+        device->GL_GetSwapInterval = X11_GLES_GetSwapInterval;
+        device->GL_SwapWindow = X11_GLES_SwapWindow;
+        device->GL_DeleteContext = X11_GLES_DeleteContext;
+        printf("SDL: Forcing GLES2 driver\n");
+    }
+#endif
 #elif SDL_VIDEO_OPENGL_EGL
     device->GL_LoadLibrary = X11_GLES_LoadLibrary;
     device->GL_GetProcAddress = X11_GLES_GetProcAddress;

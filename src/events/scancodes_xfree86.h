@@ -418,4 +418,248 @@ static const SDL_Scancode xfree86_scancode_table2[] = {
     /* 238 */   SDL_SCANCODE_UNKNOWN,   /* XF86WLAN */
 };
 
+#ifdef PANDORA
+static const SDL_Scancode pandora_scancode_table[] = {
+    /*  0 */    SDL_SCANCODE_UNKNOWN,
+    /*  1 */    SDL_SCANCODE_ESCAPE,
+    /*  2 */    SDL_SCANCODE_1,
+    /*  3 */    SDL_SCANCODE_2,
+    /*  4 */    SDL_SCANCODE_3,
+    /*  5 */    SDL_SCANCODE_4,
+    /*  6 */    SDL_SCANCODE_5,
+    /*  7 */    SDL_SCANCODE_6,
+    /*  8 */    SDL_SCANCODE_7,
+    /*  9 */    SDL_SCANCODE_8,
+    /*  10 */   SDL_SCANCODE_9,
+    /*  11 */   SDL_SCANCODE_0,
+    /*  12 */   SDL_SCANCODE_MINUS,
+    /*  13 */   SDL_SCANCODE_EQUALS,
+    /*  14 */   SDL_SCANCODE_BACKSPACE,
+    /*  15 */   SDL_SCANCODE_TAB,
+    /*  16 */   SDL_SCANCODE_Q,
+    /*  17 */   SDL_SCANCODE_W,
+    /*  18 */   SDL_SCANCODE_E,
+    /*  19 */   SDL_SCANCODE_R,
+    /*  20 */   SDL_SCANCODE_T,
+    /*  21 */   SDL_SCANCODE_Y,
+    /*  22 */   SDL_SCANCODE_U,
+    /*  23 */   SDL_SCANCODE_I,
+    /*  24 */   SDL_SCANCODE_O,
+    /*  25 */   SDL_SCANCODE_P,
+    /*  26 */   SDL_SCANCODE_LEFTBRACKET,
+    /*  27 */   SDL_SCANCODE_RIGHTBRACKET,
+    /*  28 */   SDL_SCANCODE_RETURN,
+    /*  29 */   SDL_SCANCODE_LCTRL,
+    /*  30 */   SDL_SCANCODE_A,
+    /*  31 */   SDL_SCANCODE_S,
+    /*  32 */   SDL_SCANCODE_D,
+    /*  33 */   SDL_SCANCODE_F,
+    /*  34 */   SDL_SCANCODE_G,
+    /*  35 */   SDL_SCANCODE_H,
+    /*  36 */   SDL_SCANCODE_J,
+    /*  37 */   SDL_SCANCODE_K,
+    /*  38 */   SDL_SCANCODE_L,
+    /*  39 */   SDL_SCANCODE_SEMICOLON,
+    /*  40 */   SDL_SCANCODE_APOSTROPHE,
+    /*  41 */   SDL_SCANCODE_GRAVE,
+    /*  42 */   SDL_SCANCODE_LSHIFT,
+    /*  43 */   SDL_SCANCODE_BACKSLASH,
+    /*  44 */   SDL_SCANCODE_Z,
+    /*  45 */   SDL_SCANCODE_X,
+    /*  46 */   SDL_SCANCODE_C,
+    /*  47 */   SDL_SCANCODE_V,
+    /*  48 */   SDL_SCANCODE_B,
+    /*  49 */   SDL_SCANCODE_N,
+    /*  50 */   SDL_SCANCODE_M,
+    /*  51 */   SDL_SCANCODE_COMMA,
+    /*  52 */   SDL_SCANCODE_PERIOD,
+    /*  53 */   SDL_SCANCODE_SLASH,
+    /*  54 */   SDL_SCANCODE_RSHIFT,
+    /*  55 */   SDL_SCANCODE_KP_MULTIPLY,
+    /*  56 */   SDL_SCANCODE_LALT,
+    /*  57 */   SDL_SCANCODE_SPACE,
+    /*  58 */   SDL_SCANCODE_CAPSLOCK,
+    /*  59 */   SDL_SCANCODE_F1,
+    /*  60 */   SDL_SCANCODE_F2,
+    /*  61 */   SDL_SCANCODE_F3,
+    /*  62 */   SDL_SCANCODE_F4,
+    /*  63 */   SDL_SCANCODE_F5,
+    /*  64 */   SDL_SCANCODE_F6,
+    /*  65 */   SDL_SCANCODE_F7,
+    /*  66 */   SDL_SCANCODE_F8,
+    /*  67 */   SDL_SCANCODE_F9,
+    /*  68 */   SDL_SCANCODE_F10,
+    /*  69 */   SDL_SCANCODE_NUMLOCKCLEAR,
+    /*  70 */   SDL_SCANCODE_SCROLLLOCK,
+    /*  71 */   95,
+    /*  72 */   96,
+    /*  73 */   97,
+    /*  74 */   SDL_SCANCODE_MINUS,
+    /*  75 */   SDL_SCANCODE_HOME,
+    /*  76 */   93,
+    /*  77 */   94,
+    /*  78 */   SDL_SCANCODE_KP_PLUS,
+    /*  79 */   SDL_SCANCODE_PAGEUP,
+    /*  80 */   SDL_SCANCODE_END,
+    /*  81 */   SDL_SCANCODE_PAGEDOWN,
+    /*  82 */   98,
+    /*  83 */   99,
+    /*  84 */   SDL_SCANCODE_SYSREQ,
+    /*  85 */   SDL_SCANCODE_MODE,
+    /*  86 */   SDL_SCANCODE_MINUS,
+    /*  87 */   SDL_SCANCODE_F11,
+    /*  88 */   SDL_SCANCODE_F12,
+    /*  89 */   SDL_SCANCODE_UNKNOWN,
+    /*  90 */   SDL_SCANCODE_UNKNOWN,
+    /*  91 */   SDL_SCANCODE_UNKNOWN,
+    /*  92 */   SDL_SCANCODE_UNKNOWN,
+    /*  93 */   SDL_SCANCODE_UNKNOWN, 
+    /*  94 */   SDL_SCANCODE_UNKNOWN,
+    /*  95 */   SDL_SCANCODE_UNKNOWN,
+    /*  96 */   SDL_SCANCODE_KP_ENTER,
+    /*  97 */   SDL_SCANCODE_RCTRL,
+    /*  98 */   SDL_SCANCODE_KP_DIVIDE,
+    /*  99 */   SDL_SCANCODE_PRINTSCREEN,
+    /*  100 */  SDL_SCANCODE_RALT,
+    /*  101 */  SDL_SCANCODE_UNKNOWN,   /* Linefeed */ //0xff0a,
+    /*  102 */  SDL_SCANCODE_HOME,
+    /*  103 */  SDL_SCANCODE_UP,
+    /*  104 */  SDL_SCANCODE_PAGEUP,
+    /*  105 */  SDL_SCANCODE_LEFT,
+    /*  106 */  SDL_SCANCODE_RIGHT,
+    /*  107 */  SDL_SCANCODE_END,
+    /*  108 */  SDL_SCANCODE_DOWN,
+    /*  109 */  SDL_SCANCODE_PAGEDOWN,
+    /*  110 */  SDL_SCANCODE_INSERT,
+    /*  111 */  SDL_SCANCODE_DELETE,
+    /*  112 */  SDL_SCANCODE_UNKNOWN,
+    /*  113 */  SDL_SCANCODE_UNKNOWN,
+    /*  114 */  SDL_SCANCODE_UNKNOWN,
+    /*  115 */  SDL_SCANCODE_UNKNOWN,
+    /*  116 */  SDL_SCANCODE_UNKNOWN, 
+    /*  117 */  SDL_SCANCODE_UNKNOWN,
+    /*  118 */  SDL_SCANCODE_UNKNOWN,
+    /*  119 */  SDL_SCANCODE_UNKNOWN,
+    /*  120 */  SDL_SCANCODE_UNKNOWN,
+    /*  121 */  SDL_SCANCODE_UNKNOWN,
+    /*  122 */  SDL_SCANCODE_UNKNOWN,
+    /*  123 */  SDL_SCANCODE_UNKNOWN,
+    /*  124 */  SDL_SCANCODE_INTERNATIONAL3,   /* Yen */
+    /*  125 */  227, 
+    /*  126 */  231,
+    /*  127 */  118,
+    /*  128 */  120,
+    /*  129 */  121,
+    /*  130 */  SDL_SCANCODE_UNKNOWN,
+    /*  131 */  122,
+    /*  132 */  SDL_SCANCODE_UNKNOWN,
+    /*  133 */  SDL_SCANCODE_UNKNOWN,
+    /*  134 */  SDL_SCANCODE_UNKNOWN,
+    /*  135 */  SDL_SCANCODE_UNKNOWN,
+    /*  136 */  126,
+    /*  137 */  SDL_SCANCODE_UNKNOWN,
+    /*  138 */  117,
+    /*  139 */  SDL_SCANCODE_UNKNOWN,
+    /*  140 */  SDL_SCANCODE_UNKNOWN,
+    /*  141 */  SDL_SCANCODE_UNKNOWN,
+    /*  142 */  SDL_SCANCODE_UNKNOWN,
+    /*  143 */  SDL_SCANCODE_UNKNOWN,
+    /*  144 */  SDL_SCANCODE_UNKNOWN,
+    /*  145 */  SDL_SCANCODE_UNKNOWN,
+    /*  146 */  SDL_SCANCODE_UNKNOWN,
+    /* 147 */   SDL_SCANCODE_UNKNOWN,   /* XF86Xfer */
+    /* 148 */   SDL_SCANCODE_APP1,      /* XF86Launch1 */
+    /* 149 */   SDL_SCANCODE_APP2,      /* XF86Launch2 */
+    /* 150 */   SDL_SCANCODE_WWW,
+    /* 151 */   SDL_SCANCODE_UNKNOWN,   /* XF86DOS */
+    /* 152 */   SDL_SCANCODE_UNKNOWN,   /* XF86ScreenSaver */
+    /* 153 */   SDL_SCANCODE_UNKNOWN,
+    /* 154 */   SDL_SCANCODE_UNKNOWN,   /* XF86RotateWindows */
+    /* 155 */   SDL_SCANCODE_MAIL,
+    /* 156 */   SDL_SCANCODE_AC_BOOKMARKS,   /* XF86Favorites */
+    /* 157 */   SDL_SCANCODE_COMPUTER,
+    /* 158 */   SDL_SCANCODE_AC_BACK,
+    /* 159 */   SDL_SCANCODE_AC_FORWARD,
+    /* 160 */   SDL_SCANCODE_UNKNOWN,
+    /* 161 */   SDL_SCANCODE_EJECT,
+    /* 162 */   SDL_SCANCODE_EJECT,
+    /* 163 */   SDL_SCANCODE_AUDIONEXT,
+    /* 164 */   SDL_SCANCODE_AUDIOPLAY,
+    /* 165 */   SDL_SCANCODE_AUDIOPREV,
+    /* 166 */   SDL_SCANCODE_AUDIOSTOP,
+    /* 167 */   SDL_SCANCODE_UNKNOWN,   /* XF86AudioRecord */
+    /* 168 */   SDL_SCANCODE_UNKNOWN,   /* XF86AudioRewind */
+    /* 169 */   SDL_SCANCODE_UNKNOWN,   /* XF86Phone */
+    /* 170 */   SDL_SCANCODE_UNKNOWN,
+    /* 171 */   SDL_SCANCODE_F13,       /* XF86Tools */
+    /* 172 */   SDL_SCANCODE_AC_HOME,
+    /* 173 */   SDL_SCANCODE_AC_REFRESH,
+    /* 174 */   SDL_SCANCODE_UNKNOWN,   /* XF86Close */
+    /* 175 */   SDL_SCANCODE_UNKNOWN,
+    /* 176 */   SDL_SCANCODE_UNKNOWN,
+    /* 177 */   SDL_SCANCODE_UNKNOWN,   /* XF86ScrollUp */
+    /* 178 */   SDL_SCANCODE_UNKNOWN,   /* XF86ScrollDown */
+    /* 179 */   SDL_SCANCODE_UNKNOWN,   /* parenleft */
+    /* 180 */   SDL_SCANCODE_UNKNOWN,   /* parenright */
+    /* 181 */   SDL_SCANCODE_UNKNOWN,   /* XF86New */
+    /* 182 */   SDL_SCANCODE_AGAIN,
+    /* 183 */   SDL_SCANCODE_F13,       /* XF86Tools */
+    /* 184 */   SDL_SCANCODE_F14,       /* XF86Launch5 */
+    /* 185 */   SDL_SCANCODE_F15,       /* XF86Launch6 */
+    /* 186 */   SDL_SCANCODE_F16,       /* XF86Launch7 */
+    /* 187 */   SDL_SCANCODE_F17,       /* XF86Launch8 */
+    /* 188 */   SDL_SCANCODE_F18,       /* XF86Launch9 */
+    /* 189 */   SDL_SCANCODE_F19,       /* null keysym */
+    /* 190 */   SDL_SCANCODE_KP_AT,
+    /* 191 */   SDL_SCANCODE_UNKNOWN,
+    /* 192 */   SDL_SCANCODE_UNKNOWN,   /* $ */
+    /* 193 */   SDL_SCANCODE_UNKNOWN,   /* € */
+    /* 194 */   SDL_SCANCODE_UNKNOWN,
+    /* 195 */   SDL_SCANCODE_MODE,
+    /* 196 */   SDL_SCANCODE_UNKNOWN,
+    /* 197 */   SDL_SCANCODE_UNKNOWN,
+    /* 198 */   SDL_SCANCODE_UNKNOWN,
+    /* 199 */   SDL_SCANCODE_KP_COLON,
+    /* 200 */   SDL_SCANCODE_AUDIOPLAY,
+    /* 201 */   SDL_SCANCODE_UNKNOWN,   /* XF86AudioPause */
+    /* 202 */   SDL_SCANCODE_UNKNOWN,   /* XF86Launch3 */
+    /* 203 */   SDL_SCANCODE_UNKNOWN,   /* XF86Launch4 */
+    /* 204 */   SDL_SCANCODE_UNKNOWN,   /* XF86LaunchB */
+    /* 205 */   SDL_SCANCODE_UNKNOWN,   /* XF86Suspend */
+    /* 206 */   SDL_SCANCODE_UNKNOWN,   /* XF86Close */
+    /* 207 */   SDL_SCANCODE_AUDIOPLAY,
+    /* 208 */   SDL_SCANCODE_AUDIONEXT,
+    /* 209 */   SDL_SCANCODE_UNKNOWN,
+    /* 210 */   SDL_SCANCODE_PRINTSCREEN,
+    /* 211 */   SDL_SCANCODE_UNKNOWN,
+    /* 212 */   SDL_SCANCODE_UNKNOWN,   /* XF86WebCam */
+    /* 213 */   SDL_SCANCODE_UNKNOWN,
+    /* 214 */   SDL_SCANCODE_UNKNOWN,   /* ? */
+    /* 215 */   SDL_SCANCODE_MAIL,
+    /* 216 */   SDL_SCANCODE_UNKNOWN,
+    /* 217 */   SDL_SCANCODE_AC_SEARCH,
+    /* 218 */   SDL_SCANCODE_UNKNOWN,
+    /* 219 */   SDL_SCANCODE_UNKNOWN,   /* XF86Finance */
+    /* 220 */   SDL_SCANCODE_UNKNOWN,
+    /* 221 */   SDL_SCANCODE_UNKNOWN,   /* XF86Shop */
+    /* 222 */   SDL_SCANCODE_UNKNOWN,
+    /* 223 */   SDL_SCANCODE_STOP,
+    /* 224 */   SDL_SCANCODE_BRIGHTNESSDOWN,
+    /* 225 */   SDL_SCANCODE_BRIGHTNESSUP,
+    /* 226 */   SDL_SCANCODE_MEDIASELECT,
+    /* 227 */   SDL_SCANCODE_DISPLAYSWITCH,
+    /* 228 */   SDL_SCANCODE_KBDILLUMTOGGLE,
+    /* 229 */   SDL_SCANCODE_KBDILLUMDOWN,
+    /* 230 */   SDL_SCANCODE_KBDILLUMUP,
+    /* 231 */   SDL_SCANCODE_UNKNOWN,   /* XF86Send */
+    /* 232 */   SDL_SCANCODE_UNKNOWN,   /* XF86Reply */
+    /* 233 */   SDL_SCANCODE_UNKNOWN,   /* XF86MailForward */
+    /* 234 */   SDL_SCANCODE_UNKNOWN,   /* XF86Save */
+    /* 235 */   SDL_SCANCODE_UNKNOWN,   /* XF86Documents */
+    /* 236 */   SDL_SCANCODE_UNKNOWN,   /* XF86Battery */
+    /* 237 */   SDL_SCANCODE_UNKNOWN,   /* XF86Bluetooth */
+    /* 238 */   SDL_SCANCODE_UNKNOWN,   /* XF86WLAN */
+};
+#endif
+
 /* *INDENT-ON* */

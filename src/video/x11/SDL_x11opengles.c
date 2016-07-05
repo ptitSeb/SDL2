@@ -34,7 +34,7 @@ X11_GLES_LoadLibrary(_THIS, const char *path)
     SDL_VideoData *data = (SDL_VideoData *) _this->driverdata;
 
     /* If the profile requested is not GL ES, switch over to X11_GL functions  */
-    if (_this->gl_config.profile_mask != SDL_GL_CONTEXT_PROFILE_ES) {
+    if (_this->gl_config.profile_mask != SDL_GL_CONTEXT_PROFILE_ES && !SDL_getenv("SDL_VIDEO_GLES2")) {
         #if SDL_VIDEO_OPENGL_GLX
         X11_GLES_UnloadLibrary(_this);
         _this->GL_LoadLibrary = X11_GL_LoadLibrary;

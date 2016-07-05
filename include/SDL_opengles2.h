@@ -33,6 +33,9 @@
 #include <GLES2/gl2platform.h>
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
+#ifndef GLchar
+#define GLchar char
+#endif
 #endif
 
 #else /* _MSC_VER */

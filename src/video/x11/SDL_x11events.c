@@ -775,7 +775,7 @@ X11_DispatchEvent(_THIS)
 #endif
             /* */
             SDL_zero(text);
-#ifdef X_HAVE_UTF8_STRING
+#if defined(X_HAVE_UTF8_STRING) && !defined(PANDORA)
             if (data->ic) {
                 X11_Xutf8LookupString(data->ic, &xevent.xkey, text, sizeof(text),
                                   &keysym, &status);
@@ -1321,7 +1321,9 @@ static int
 X11_Pending(Display * display)
 {
     /* Flush the display connection and look to see if events are queued */
-    X11_XFlush(display);
+#ifndef PANDORA
+    X11_XFlush(display);    //May cause issue with mouse movement on the Pandora
+#endif
     if (X11_XEventsQueued(display, QueuedAlready)) {
         return (1);
     }

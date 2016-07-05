@@ -315,7 +315,11 @@ X11_WarpMouse(SDL_Window * window, int x, int y)
     Display *display = data->videodata->display;
 
     X11_XWarpPointer(display, None, data->xwindow, 0, 0, 0, 0, x, y);
+#ifdef PANDORA
+    X11_XSync(display, True);
+#else
     X11_XSync(display, False);
+#endif
 }
 
 static int
@@ -324,7 +328,11 @@ X11_WarpMouseGlobal(int x, int y)
     Display *display = GetDisplay();
 
     X11_XWarpPointer(display, None, DefaultRootWindow(display), 0, 0, 0, 0, x, y);
+#ifdef PANDORA
+    X11_XSync(display, True);
+#else
     X11_XSync(display, False);
+#endif
     return 0;
 }
 
@@ -358,7 +366,11 @@ X11_CaptureMouse(SDL_Window *window)
         X11_XUngrabPointer(display, CurrentTime);
     }
 
+#ifdef PANDORA
+    X11_XSync(display, True);
+#else
     X11_XSync(display, False);
+#endif
 
     return 0;
 }

@@ -196,7 +196,7 @@ SDL_EGL_LoadLibrary(_THIS, const char *egl_path, NativeDisplayType native_displa
     }
 
     if (egl_dll_handle == NULL) {
-        if (_this->gl_config.profile_mask == SDL_GL_CONTEXT_PROFILE_ES) {
+        if((_this->gl_config.profile_mask == SDL_GL_CONTEXT_PROFILE_ES) || (SDL_getenv("SDL_VIDEO_GLES2"))) {
             if (_this->gl_config.major_version > 1) {
                 path = DEFAULT_OGL_ES2;
                 egl_dll_handle = SDL_LoadObject(path);
@@ -267,7 +267,11 @@ SDL_EGL_LoadLibrary(_THIS, const char *egl_path, NativeDisplayType native_displa
     LOAD_FUNC(eglQueryString);
     
 #if !defined(__WINRT__)
+#ifdef PANDORA
+    _this->egl_data->egl_display = _this->egl_data->eglGetDisplay(EGL_DEFAULT_DISPLAY);   //PANDORA FrameBuffer mode only (no window mode)
+#else
     _this->egl_data->egl_display = _this->egl_data->eglGetDisplay(native_display);
+#endif
     if (!_this->egl_data->egl_display) {
         return SDL_SetError("Could not get EGL display");
     }
@@ -362,6 +366,10 @@ SDL_EGL_ChooseConfig(_THIS)
 #endif
         if (_this->gl_config.major_version >= 2) {
             attribs[i++] = EGL_OPENGL_ES2_BIT;
+#ifdef PANDORA
+            attribs[i++] = EGL_SURFACE_TYPE;
+            attribs[i++] = EGL_WINDOW_BIT;
+#endif
         } else {
             attribs[i++] = EGL_OPENGL_ES_BIT;
         }
@@ -612,7 +620,11 @@ SDL_EGL_CreateSurface(_THIS, NativeWindowType nw)
     return _this->egl_data->eglCreateWindowSurface(
             _this->egl_data->egl_display,
             _this->egl_data->egl_config,
+#ifdef PANDORA
+            NULL, NULL);    //using FB mode on PANDORA
+#else
             nw, NULL);
+#endif
 }
 
 void
