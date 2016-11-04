@@ -740,6 +740,20 @@ SDL_CreateColorCursor(SDL_Surface *surface, int hot_x, int hot_y)
         surface = temp;
     }
 
+    
+    {
+        int x, y;
+        Uint32 *ptr;
+        for (y = 0; y < surface->h; ++y) {
+            ptr = (Uint32 *)((Uint8 *)surface->pixels + y * surface->pitch);
+            for (x = 0; x < surface->w; ++x) {
+                int alpha = (*ptr >> 24) & 0xff;
+                if (alpha==0) *ptr=0;
+                ++ptr;
+            }
+        }
+    }
+
     cursor = mouse->CreateCursor(surface, hot_x, hot_y);
     if (cursor) {
         cursor->next = mouse->cursors;
