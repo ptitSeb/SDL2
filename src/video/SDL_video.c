@@ -198,7 +198,7 @@ ShouldUseTextureFramebuffer()
     /* Properly configured OpenGL drivers are faster than MIT-SHM */
 #if SDL_VIDEO_OPENGL
     /* Ugh, find a way to cache this value! */
-#ifdef PANDORA
+#if defined(PANDORA) || defined(CHIP)
     return SDL_TRUE;
 #else
     {

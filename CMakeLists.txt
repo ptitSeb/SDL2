@@ -307,6 +307,7 @@ set_option(DIRECTX             "Use DirectX for Windows audio/video" ${WINDOWS})
 set_option(RENDER_D3D          "Enable the Direct3D render driver" ${WINDOWS})
 set_option(VIDEO_VIVANTE       "Use Vivante EGL video driver" ${UNIX_SYS})
 set_option(HAVE_PANDORA             "Compile for the OpenPandora" ${HAVE_PANDORA})
+set_option(HAVE_CHIP             "Compile for C.H.I.P." ${HAVE_CHIP})
 
 
 # TODO: We should (should we?) respect cmake's ${BUILD_SHARED_LIBS} flag here
@@ -1384,7 +1385,11 @@ configure_file("${SDL2_SOURCE_DIR}/include/SDL_config.h.cmake"
 
 #Pandora
 if(HAVE_PANDORA)
-  add_definitions(-D_USE_MATH_DEFINES) # needed for M_PI
+  add_definitions(-D_USE_MATH_DEFINES -DPANDORA) # needed for M_PI
+endif()
+#CHIP
+if(HAVE_CHIP)
+  add_definitions(-DCHIP)
 endif()
 
 # Prepare the flags and remove duplicates
