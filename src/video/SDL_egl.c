@@ -267,7 +267,7 @@ SDL_EGL_LoadLibrary(_THIS, const char *egl_path, NativeDisplayType native_displa
     LOAD_FUNC(eglQueryString);
     
 #if !defined(__WINRT__)
-#if defined(PANDORA) || defined(CHIP)
+#if defined(PANDORA)/* || defined(CHIP)*/
     _this->egl_data->egl_display = _this->egl_data->eglGetDisplay(EGL_DEFAULT_DISPLAY);   // FrameBuffer mode only (no window mode)
 #else
     _this->egl_data->egl_display = _this->egl_data->eglGetDisplay(native_display);
@@ -366,7 +366,7 @@ SDL_EGL_ChooseConfig(_THIS)
 #endif
         if (_this->gl_config.major_version >= 2) {
             attribs[i++] = EGL_OPENGL_ES2_BIT;
-#if defined(PANDORA) || defined(CHIP)
+#if defined(PANDORA) /*|| defined(CHIP)*/
             attribs[i++] = EGL_SURFACE_TYPE;
             attribs[i++] = EGL_WINDOW_BIT;
 #endif
@@ -620,7 +620,7 @@ SDL_EGL_CreateSurface(_THIS, NativeWindowType nw)
     return _this->egl_data->eglCreateWindowSurface(
             _this->egl_data->egl_display,
             _this->egl_data->egl_config,
-#if defined(PANDORA) || defined(CHIP)
+#if defined(PANDORA) /*|| defined(CHIP)*/
             NULL, NULL);    //using FB mode
 #else
             nw, NULL);
