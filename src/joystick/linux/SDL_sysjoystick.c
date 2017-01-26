@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -42,11 +42,6 @@
 #include "../SDL_joystick_c.h"
 #include "SDL_sysjoystick_c.h"
 
-/* !!! FIXME: move this somewhere else. */
-#if !SDL_EVENTS_DISABLED
-#include "../../events/SDL_events_c.h"
-#endif
-
 /* This isn't defined in older Linux kernel headers */
 #ifndef SYN_DROPPED
 #define SYN_DROPPED 3
@@ -86,7 +81,7 @@ static int
 IsJoystick(int fd, char *namebuf, const size_t namebuflen, SDL_JoystickGUID *guid)
 {
     struct input_id inpid;
-    Uint16 *guid16 = (Uint16 *) ((char *) &guid->data);
+    Uint16 *guid16 = (Uint16 *)guid->data;
 
 #ifndef PANDORA
 #if !SDL_USE_LIBUDEV
@@ -117,23 +112,23 @@ IsJoystick(int fd, char *namebuf, const size_t namebuflen, SDL_JoystickGUID *gui
     }
 
 #ifdef DEBUG_JOYSTICK
-    printf("Joystick: %s, bustype = %d, vendor = 0x%x, product = 0x%x, version = %d\n", namebuf, inpid.bustype, inpid.vendor, inpid.product, inpid.version);
+    printf("Joystick: %s, bustype = %d, vendor = 0x%.4x, product = 0x%.4x, version = %d\n", namebuf, inpid.bustype, inpid.vendor, inpid.product, inpid.version);
 #endif
 
     SDL_memset(guid->data, 0, sizeof(guid->data));
 
     /* We only need 16 bits for each of these; space them out to fill 128. */
     /* Byteswap so devices get same GUID on little/big endian platforms. */
-    *(guid16++) = SDL_SwapLE16(inpid.bustype);
-    *(guid16++) = 0;
+    *guid16++ = SDL_SwapLE16(inpid.bustype);
+    *guid16++ = 0;
 
-    if (inpid.vendor && inpid.product && inpid.version) {
-        *(guid16++) = SDL_SwapLE16(inpid.vendor);
-        *(guid16++) = 0;
-        *(guid16++) = SDL_SwapLE16(inpid.product);
-        *(guid16++) = 0;
-        *(guid16++) = SDL_SwapLE16(inpid.version);
-        *(guid16++) = 0;
+    if (inpid.vendor && inpid.product) {
+        *guid16++ = SDL_SwapLE16(inpid.vendor);
+        *guid16++ = 0;
+        *guid16++ = SDL_SwapLE16(inpid.product);
+        *guid16++ = 0;
+        *guid16++ = SDL_SwapLE16(inpid.version);
+        *guid16++ = 0;
     } else {
         SDL_strlcpy((char*)guid16, namebuf, sizeof(guid->data) - 4);
     }
@@ -178,9 +173,6 @@ MaybeAddDevice(const char *path)
     char namebuf[128];
     SDL_JoystickGUID guid;
     SDL_joylist_item *item;
-#if !SDL_EVENTS_DISABLED
-    SDL_Event event;
-#endif
 
     if (path == NULL) {
         return -1;
@@ -241,18 +233,7 @@ MaybeAddDevice(const char *path)
     /* Need to increment the joystick count before we post the event */
     ++numjoysticks;
 
-    /* !!! FIXME: Move this to an SDL_PrivateJoyDeviceAdded() function? */
-#if !SDL_EVENTS_DISABLED
-    event.type = SDL_JOYDEVICEADDED;
-
-    if (SDL_GetEventState(event.type) == SDL_ENABLE) {
-        event.jdevice.which = (numjoysticks - 1);
-        if ( (SDL_EventOK == NULL) ||
-             (*SDL_EventOK) (SDL_EventOKParam, &event) ) {
-            SDL_PushEvent(&event);
-        }
-    }
-#endif /* !SDL_EVENTS_DISABLED */
+    SDL_PrivateJoystickAdded(numjoysticks - 1);
 
     return numjoysticks;
 }
@@ -264,9 +245,6 @@ MaybeRemoveDevice(const char *path)
 {
     SDL_joylist_item *item;
     SDL_joylist_item *prev = NULL;
-#if !SDL_EVENTS_DISABLED
-    SDL_Event event;
-#endif
 
     if (path == NULL) {
         return -1;
@@ -292,18 +270,7 @@ MaybeRemoveDevice(const char *path)
             /* Need to decrement the joystick count before we post the event */
             --numjoysticks;
 
-            /* !!! FIXME: Move this to an SDL_PrivateJoyDeviceRemoved() function? */
-#if !SDL_EVENTS_DISABLED
-            event.type = SDL_JOYDEVICEREMOVED;
-
-            if (SDL_GetEventState(event.type) == SDL_ENABLE) {
-                event.jdevice.which = item->device_instance;
-                if ( (SDL_EventOK == NULL) ||
-                     (*SDL_EventOK) (SDL_EventOKParam, &event) ) {
-                    SDL_PushEvent(&event);
-                }
-            }
-#endif /* !SDL_EVENTS_DISABLED */
+            SDL_PrivateJoystickRemoved(item->device_instance);
 
             SDL_free(item->path);
             SDL_free(item->name);
@@ -383,6 +350,7 @@ JoystickInitPandoraNubs(void)
 }
 #endif
 
+#if ! SDL_USE_LIBUDEV
 static int
 JoystickInitWithoutUdev(void)
 {
@@ -399,7 +367,7 @@ JoystickInitWithoutUdev(void)
 
     return numjoysticks;
 }
-
+#endif
 
 #if SDL_USE_LIBUDEV
 static int
@@ -447,17 +415,19 @@ SDL_SYS_JoystickInit(void)
 #else
     return JoystickInitWithUdev();
 #endif
-#endif
-
+#else 
     return JoystickInitWithoutUdev();
+#endif
 }
 
-int SDL_SYS_NumJoysticks()
+int
+SDL_SYS_NumJoysticks(void)
 {
     return numjoysticks;
 }
 
-void SDL_SYS_JoystickDetect()
+void
+SDL_SYS_JoystickDetect(void)
 {
 #if SDL_USE_LIBUDEV
     SDL_UDEV_Poll();
@@ -551,16 +521,16 @@ ConfigJoystick(SDL_Joystick * joystick, int fd)
 #ifdef DEBUG_INPUT_EVENTS
                 printf("Joystick has button: 0x%x\n", i);
 #endif
-                joystick->hwdata->key_map[i - BTN_MISC] = joystick->nbuttons;
+                joystick->hwdata->key_map[i] = joystick->nbuttons;
                 ++joystick->nbuttons;
             }
         }
-        for (i = BTN_MISC; i < BTN_JOYSTICK; ++i) {
+        for (i = 0; i < BTN_JOYSTICK; ++i) {
             if (test_bit(i, keybit)) {
 #ifdef DEBUG_INPUT_EVENTS
                 printf("Joystick has button: 0x%x\n", i);
 #endif
-                joystick->hwdata->key_map[i - BTN_MISC] = joystick->nbuttons;
+                joystick->hwdata->key_map[i] = joystick->nbuttons;
                 ++joystick->nbuttons;
             }
         }
@@ -817,12 +787,9 @@ HandleInputEvents(SDL_Joystick * joystick)
             code = events[i].code;
             switch (events[i].type) {
             case EV_KEY:
-                if (code >= BTN_MISC) {
-                    code -= BTN_MISC;
-                    SDL_PrivateJoystickButton(joystick,
-                                              joystick->hwdata->key_map[code],
-                                              events[i].value);
-                }
+                SDL_PrivateJoystickButton(joystick,
+                                          joystick->hwdata->key_map[code],
+                                          events[i].value);
                 break;
             case EV_ABS:
                 switch (code) {

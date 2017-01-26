@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -22,10 +22,6 @@
 #include "../../SDL_internal.h"
 
 #if SDL_VIDEO_DRIVER_WAYLAND
-
-#ifndef _GNU_SOURCE
-#define _GNU_SOURCE
-#endif
 
 #include <sys/types.h>
 #include <sys/mman.h>
@@ -365,7 +361,13 @@ Wayland_WarpMouseGlobal(int x, int y)
 static int
 Wayland_SetRelativeMouseMode(SDL_bool enabled)
 {
-    return SDL_Unsupported();
+    SDL_VideoDevice *vd = SDL_GetVideoDevice();
+    SDL_VideoData *data = (SDL_VideoData *) vd->driverdata;
+
+    if (enabled)
+        return Wayland_input_lock_pointer(data->input);
+    else
+        return Wayland_input_unlock_pointer(data->input);
 }
 
 void

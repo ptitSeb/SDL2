@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -44,6 +44,9 @@ typedef struct {
     struct wl_cursor_theme *cursor_theme;
     struct wl_pointer *pointer;
     struct wl_shell *shell;
+    struct zwp_relative_pointer_manager_v1 *relative_pointer_manager;
+    struct zwp_pointer_constraints_v1 *pointer_constraints;
+    struct wl_data_device_manager *data_device_manager;
 
     EGLDisplay edpy;
     EGLContext context;
@@ -57,6 +60,10 @@ typedef struct {
     struct qt_surface_extension *surface_extension;
     struct qt_windowmanager *windowmanager;
 #endif /* SDL_VIDEO_DRIVER_WAYLAND_QT_TOUCH */
+
+    char *classname;
+
+    int relative_mouse_mode;
 } SDL_VideoData;
 
 #endif /* _SDL_waylandvideo_h */

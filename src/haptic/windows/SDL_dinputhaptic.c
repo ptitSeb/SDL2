@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -325,20 +325,12 @@ SDL_DINPUT_HapticOpenFromDevice(SDL_Haptic * haptic, LPDIRECTINPUTDEVICE8 device
 
         /* Set data format. */
         ret = IDirectInputDevice8_SetDataFormat(haptic->hwdata->device,
-                                                &c_dfDIJoystick2);
+                                                &SDL_c_dfDIJoystick2);
         if (FAILED(ret)) {
             DI_SetError("Setting data format", ret);
             goto acquire_err;
         }
 
-        /* Get number of axes. */
-        ret = IDirectInputDevice8_EnumObjects(haptic->hwdata->device,
-                                              DI_DeviceObjectCallback,
-                                              haptic, DIDFT_AXIS);
-        if (FAILED(ret)) {
-            DI_SetError("Getting device axes", ret);
-            goto acquire_err;
-        }
 
         /* Acquire the device. */
         ret = IDirectInputDevice8_Acquire(haptic->hwdata->device);
@@ -346,6 +338,15 @@ SDL_DINPUT_HapticOpenFromDevice(SDL_Haptic * haptic, LPDIRECTINPUTDEVICE8 device
             DI_SetError("Acquiring DirectInput device", ret);
             goto acquire_err;
         }
+    }
+
+    /* Get number of axes. */
+    ret = IDirectInputDevice8_EnumObjects(haptic->hwdata->device,
+                                          DI_DeviceObjectCallback,
+                                          haptic, DIDFT_AXIS);
+    if (FAILED(ret)) {
+        DI_SetError("Getting device axes", ret);
+        goto acquire_err;
     }
 
     /* Reset all actuators - just in case. */
@@ -1015,6 +1016,19 @@ SDL_DINPUT_HapticUpdateEffect(SDL_Haptic * haptic, struct haptic_effect *effect,
     /* Create the actual effect. */
     ret =
         IDirectInputEffect_SetParameters(effect->hweffect->ref, &temp, flags);
+    if (ret == DIERR_NOTEXCLUSIVEACQUIRED) {
+        IDirectInputDevice8_Unacquire(haptic->hwdata->device);
+        ret = IDirectInputDevice8_SetCooperativeLevel(haptic->hwdata->device, SDL_HelperWindow, DISCL_EXCLUSIVE | DISCL_BACKGROUND);
+        if (SUCCEEDED(ret)) {
+            ret = DIERR_NOTACQUIRED;
+        }
+    }
+    if (ret == DIERR_INPUTLOST || ret == DIERR_NOTACQUIRED) {
+        ret = IDirectInputDevice8_Acquire(haptic->hwdata->device);
+        if (SUCCEEDED(ret)) {
+            ret = IDirectInputEffect_SetParameters(effect->hweffect->ref, &temp, flags);
+        }
+    }
     if (FAILED(ret)) {
         DI_SetError("Unable to update effect", ret);
         goto err_update;

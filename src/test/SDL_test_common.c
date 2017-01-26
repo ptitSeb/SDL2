@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -1064,6 +1064,12 @@ SDLTest_PrintEvent(SDL_Event * event)
         case SDL_WINDOWEVENT_CLOSE:
             SDL_Log("SDL EVENT: Window %d closed", event->window.windowID);
             break;
+        case SDL_WINDOWEVENT_TAKE_FOCUS:
+            SDL_Log("SDL EVENT: Window %d take focus", event->window.windowID);
+            break;
+        case SDL_WINDOWEVENT_HIT_TEST:
+            SDL_Log("SDL EVENT: Window %d hit test", event->window.windowID);
+            break;
         default:
             SDL_Log("SDL EVENT: Window %d got unknown event %d",
                     event->window.windowID, event->window.event);
@@ -1204,10 +1210,10 @@ SDLTest_PrintEvent(SDL_Event * event)
                 event->tfinger.dx, event->tfinger.dy, event->tfinger.pressure);
         break;
     case SDL_DOLLARGESTURE:
-        SDL_Log("SDL_EVENT: Dollar gesture detect: %"SDL_PRIs64, (Sint64) event->dgesture.gestureId);
+        SDL_Log("SDL_EVENT: Dollar gesture detect: %ld", (long) event->dgesture.gestureId);
         break;
     case SDL_DOLLARRECORD:
-        SDL_Log("SDL_EVENT: Dollar gesture record: %"SDL_PRIs64, (Sint64) event->dgesture.gestureId);
+        SDL_Log("SDL_EVENT: Dollar gesture record: %ld", (long) event->dgesture.gestureId);
         break;
     case SDL_MULTIGESTURE:
         SDL_Log("SDL_EVENT: Multi gesture fingers: %d", event->mgesture.numFingers);

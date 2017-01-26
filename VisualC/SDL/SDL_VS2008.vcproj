@@ -140,7 +140,6 @@
 				PreprocessorDefinitions="_DEBUG;_WINDOWS"
 				RuntimeLibrary="2"
 				BufferSecurityCheck="false"
-				EnableEnhancedInstructionSet="1"
 				WarningLevel="3"
 				DebugInformationFormat="1"
 				OmitDefaultLibName="true"
@@ -305,7 +304,6 @@
 				PreprocessorDefinitions="NDEBUG;_WINDOWS"
 				RuntimeLibrary="2"
 				BufferSecurityCheck="false"
-				EnableEnhancedInstructionSet="1"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 				OmitDefaultLibName="true"
@@ -692,7 +690,7 @@
 			>
 		</File>
 		<File
-			RelativePath="..\..\src\libm\math.h"
+			RelativePath="..\..\src\libm\math_libm.h"
 			>
 		</File>
 		<File
@@ -701,10 +699,6 @@
 		</File>
 		<File
 			RelativePath="..\..\src\render\mmx.h"
-			>
-		</File>
-		<File
-			RelativePath=".\resource.h"
 			>
 		</File>
 		<File
@@ -769,10 +763,6 @@
 		</File>
 		<File
 			RelativePath="..\..\src\audio\SDL_audiodev_c.h"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\audio\SDL_audiomem.h"
 			>
 		</File>
 		<File
@@ -972,6 +962,14 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\src\SDL_dataqueue.c"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\SDL_dataqueue.h"
+			>
+		</File>
+		<File
 			RelativePath="..\..\src\SDL_error.c"
 			>
 		</File>
@@ -1008,11 +1006,11 @@
 			>
 		</File>
 		<File
-			RelativePath="..\..\src\video\SDL_glesfuncs.h"
+			RelativePath="..\..\src\render\opengles\SDL_glesfuncs.h"
 			>
 		</File>
 		<File
-			RelativePath="..\..\src\video\SDL_glfuncs.h"
+			RelativePath="..\..\src\render\opengl\SDL_glfuncs.h"
 			>
 		</File>
 		<File
@@ -1021,10 +1019,6 @@
 		</File>
 		<File
 			RelativePath="..\..\src\SDL_hints.c"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\SDL_hints_c.h"
 			>
 		</File>
 		<File
@@ -1269,10 +1263,6 @@
 		</File>
 		<File
 			RelativePath="..\..\src\timer\windows\SDL_systimer.c"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\timer\SDL_systimer.h"
 			>
 		</File>
 		<File

@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -20,8 +20,8 @@
 */
 #include "../SDL_internal.h"
 
-#ifndef _SDL_sysjoystick_h
-#define _SDL_sysjoystick_h
+#ifndef SDL_sysjoystick_h_
+#define SDL_sysjoystick_h_
 
 /* This is the system specific header for the SDL joystick API */
 
@@ -29,13 +29,22 @@
 #include "SDL_joystick_c.h"
 
 /* The SDL joystick structure */
+typedef struct _SDL_JoystickAxisInfo
+{
+    Sint16 initial_value;       /* Initial axis state */
+    Sint16 value;               /* Current axis state */
+    Sint16 zero;                /* Zero point on the axis (-32768 for triggers) */
+    SDL_bool has_initial_value; /* Whether we've seen a value on the axis yet */
+    SDL_bool sent_initial_value; /* Whether we've sent the initial axis value */
+} SDL_JoystickAxisInfo;
+
 struct _SDL_Joystick
 {
     SDL_JoystickID instance_id; /* Device instance, monotonically increasing from 0 */
     char *name;                 /* Joystick name - system dependent */
 
     int naxes;                  /* Number of axis controls on the joystick */
-    Sint16 *axes;               /* Current axis states */
+    SDL_JoystickAxisInfo *axes;
 
     int nhats;                  /* Number of hats on the joystick */
     Uint8 *hats;                /* Current hat states */
@@ -66,10 +75,10 @@ struct _SDL_Joystick
 extern int SDL_SYS_JoystickInit(void);
 
 /* Function to return the number of joystick devices plugged in right now */
-extern int SDL_SYS_NumJoysticks();
+extern int SDL_SYS_NumJoysticks(void);
 
 /* Function to cause any queued joystick insertions to be processed */
-extern void SDL_SYS_JoystickDetect();
+extern void SDL_SYS_JoystickDetect(void);
 
 /* Function to get the device-dependent name of a joystick */
 extern const char *SDL_SYS_JoystickNameForDeviceIndex(int device_index);
@@ -113,6 +122,6 @@ extern SDL_JoystickGUID SDL_SYS_JoystickGetGUID(SDL_Joystick * joystick);
 extern SDL_bool SDL_SYS_IsXInputGamepad_DeviceIndex(int device_index);
 #endif
 
-#endif /* _SDL_sysjoystick_h */
+#endif /* SDL_sysjoystick_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

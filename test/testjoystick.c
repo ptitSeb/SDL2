@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -274,6 +274,7 @@ main(int argc, char *argv[])
             SDL_Log("    buttons: %d\n", SDL_JoystickNumButtons(joystick));
             SDL_Log("instance id: %d\n", SDL_JoystickInstanceID(joystick));
             SDL_Log("       guid: %s\n", guid);
+            SDL_Log("    VID/PID: 0x%.4x/0x%.4x\n", SDL_JoystickGetVendor(joystick), SDL_JoystickGetProduct(joystick));
             SDL_JoystickClose(joystick);
         }
     }
@@ -320,6 +321,7 @@ main(int argc, char *argv[])
                     || (event.type == SDL_MOUSEBUTTONDOWN)) {
                     keepGoing = SDL_FALSE;
                 } else if (event.type == SDL_JOYDEVICEADDED) {
+                    device = event.jdevice.which;
                     joystick = SDL_JoystickOpen(device);
                     if (joystick != NULL) {
                         SDL_assert(SDL_JoystickFromInstanceID(SDL_JoystickInstanceID(joystick)) == joystick);
@@ -344,3 +346,5 @@ main(int argc, char *argv[])
 }
 
 #endif
+
+/* vi: set ts=4 sw=4 expandtab: */

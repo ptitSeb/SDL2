@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -158,10 +158,46 @@ WIN_QuitKeyboard(_THIS)
 }
 
 void
+WIN_ResetDeadKeys()
+{
+    /*
+    if a deadkey has been typed, but not the next character (which the deadkey might modify), 
+    this tries to undo the effect pressing the deadkey.
+    see: http://archives.miloush.net/michkap/archive/2006/09/10/748775.html
+    */
+    BYTE keyboardState[256];
+    WCHAR buffer[16];
+    int keycode, scancode, result, i;
+
+    GetKeyboardState(keyboardState);
+
+    keycode = VK_SPACE;
+    scancode = MapVirtualKey(keycode, MAPVK_VK_TO_VSC);
+    if (scancode == 0) {
+        /* the keyboard doesn't have this key */
+        return;
+    }
+
+    for (i = 0; i < 5; i++) {
+        result = ToUnicode(keycode, scancode, keyboardState, (LPWSTR)buffer, 16, 0);
+        if (result > 0) {
+            /* success */
+            return;
+        }
+    }
+}
+
+void
 WIN_StartTextInput(_THIS)
 {
 #ifndef SDL_DISABLE_WINDOWS_IME
-    SDL_Window *window = SDL_GetKeyboardFocus();
+    SDL_Window *window;
+#endif
+
+    WIN_ResetDeadKeys();
+
+#ifndef SDL_DISABLE_WINDOWS_IME
+    window = SDL_GetKeyboardFocus();
     if (window) {
         HWND hwnd = ((SDL_WindowData *) window->driverdata)->hwnd;
         SDL_VideoData *videodata = (SDL_VideoData *)_this->driverdata;
@@ -176,7 +212,13 @@ void
 WIN_StopTextInput(_THIS)
 {
 #ifndef SDL_DISABLE_WINDOWS_IME
-    SDL_Window *window = SDL_GetKeyboardFocus();
+    SDL_Window *window;
+#endif
+
+    WIN_ResetDeadKeys();
+
+#ifndef SDL_DISABLE_WINDOWS_IME
+    window = SDL_GetKeyboardFocus();
     if (window) {
         HWND hwnd = ((SDL_WindowData *) window->driverdata)->hwnd;
         SDL_VideoData *videodata = (SDL_VideoData *)_this->driverdata;
@@ -994,7 +1036,7 @@ STDMETHODIMP_(ULONG) TSFSink_AddRef(TSFSink *sink)
     return ++sink->refcount;
 }
 
-STDMETHODIMP_(ULONG)TSFSink_Release(TSFSink *sink)
+STDMETHODIMP_(ULONG) TSFSink_Release(TSFSink *sink)
 {
     --sink->refcount;
     if (sink->refcount == 0) {

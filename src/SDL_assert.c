@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -111,7 +111,8 @@ static void SDL_GenerateAssertionReport(void)
     }
 }
 
-static void SDL_ExitProcess(int exitcode)
+
+static SDL_NORETURN void SDL_ExitProcess(int exitcode)
 {
 #ifdef __WIN32__
     ExitProcess(exitcode);
@@ -120,7 +121,8 @@ static void SDL_ExitProcess(int exitcode)
 #endif
 }
 
-static void SDL_AbortAssertion(void)
+
+static SDL_NORETURN void SDL_AbortAssertion(void)
 {
     SDL_Quit();
     SDL_ExitProcess(42);

@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -24,7 +24,7 @@
  *
  *  Include file for SDL joystick event handling
  *
- * The term "device_index" identifies currently plugged in joystick devices between 0 and SDL_NumJoysticks, with the exact joystick
+ * The term "device_index" identifies currently plugged in joystick devices between 0 and SDL_NumJoysticks(), with the exact joystick
  *   behind a device_index changing as joysticks are plugged and unplugged.
  *
  * The term "instance_id" is the current instantiation of a joystick device in the system, if the joystick is removed and then re-inserted
@@ -36,8 +36,8 @@
  *
  */
 
-#ifndef _SDL_joystick_h
-#define _SDL_joystick_h
+#ifndef SDL_joystick_h_
+#define SDL_joystick_h_
 
 #include "SDL_stdinc.h"
 #include "SDL_error.h"
@@ -60,7 +60,9 @@ extern "C" {
  *  SDL_Init(): SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS
  */
 
-/* The joystick structure used to identify an SDL joystick */
+/**
+ * The joystick structure used to identify an SDL joystick
+ */
 struct _SDL_Joystick;
 typedef struct _SDL_Joystick SDL_Joystick;
 
@@ -96,6 +98,33 @@ extern DECLSPEC int SDLCALL SDL_NumJoysticks(void);
 extern DECLSPEC const char *SDLCALL SDL_JoystickNameForIndex(int device_index);
 
 /**
+ *  Return the GUID for the joystick at this index
+ *  This can be called before any joysticks are opened.
+ */
+extern DECLSPEC SDL_JoystickGUID SDLCALL SDL_JoystickGetDeviceGUID(int device_index);
+
+/**
+ *  Get the USB vendor ID of a joystick, if available.
+ *  This can be called before any joysticks are opened.
+ *  If the vendor ID isn't available this function returns 0.
+ */
+extern DECLSPEC Uint16 SDLCALL SDL_JoystickGetDeviceVendor(int device_index);
+
+/**
+ *  Get the USB product ID of a joystick, if available.
+ *  This can be called before any joysticks are opened.
+ *  If the product ID isn't available this function returns 0.
+ */
+extern DECLSPEC Uint16 SDLCALL SDL_JoystickGetDeviceProduct(int device_index);
+
+/**
+ *  Get the product version of a joystick, if available.
+ *  This can be called before any joysticks are opened.
+ *  If the product version isn't available this function returns 0.
+ */
+extern DECLSPEC Uint16 SDLCALL SDL_JoystickGetDeviceProductVersion(int device_index);
+
+/**
  *  Open a joystick for use.
  *  The index passed as an argument refers to the N'th joystick on the system.
  *  This index is not the value which will identify this joystick in future
@@ -118,14 +147,27 @@ extern DECLSPEC SDL_Joystick *SDLCALL SDL_JoystickFromInstanceID(SDL_JoystickID 
 extern DECLSPEC const char *SDLCALL SDL_JoystickName(SDL_Joystick * joystick);
 
 /**
- *  Return the GUID for the joystick at this index
- */
-extern DECLSPEC SDL_JoystickGUID SDLCALL SDL_JoystickGetDeviceGUID(int device_index);
-
-/**
  *  Return the GUID for this opened joystick
  */
 extern DECLSPEC SDL_JoystickGUID SDLCALL SDL_JoystickGetGUID(SDL_Joystick * joystick);
+
+/**
+ *  Get the USB vendor ID of an opened joystick, if available.
+ *  If the vendor ID isn't available this function returns 0.
+ */
+extern DECLSPEC Uint16 SDLCALL SDL_JoystickGetVendor(SDL_Joystick * joystick);
+
+/**
+ *  Get the USB product ID of an opened joystick, if available.
+ *  If the product ID isn't available this function returns 0.
+ */
+extern DECLSPEC Uint16 SDLCALL SDL_JoystickGetProduct(SDL_Joystick * joystick);
+
+/**
+ *  Get the product version of an opened joystick, if available.
+ *  If the product version isn't available this function returns 0.
+ */
+extern DECLSPEC Uint16 SDLCALL SDL_JoystickGetProductVersion(SDL_Joystick * joystick);
 
 /**
  *  Return a string representation for this guid. pszGUID must point to at least 33 bytes
@@ -134,7 +176,7 @@ extern DECLSPEC SDL_JoystickGUID SDLCALL SDL_JoystickGetGUID(SDL_Joystick * joys
 extern DECLSPEC void SDLCALL SDL_JoystickGetGUIDString(SDL_JoystickGUID guid, char *pszGUID, int cbGUID);
 
 /**
- *  convert a string into a joystick formatted guid
+ *  Convert a string into a joystick guid
  */
 extern DECLSPEC SDL_JoystickGUID SDLCALL SDL_JoystickGetGUIDFromString(const char *pchGUID);
 
@@ -190,6 +232,8 @@ extern DECLSPEC void SDLCALL SDL_JoystickUpdate(void);
  */
 extern DECLSPEC int SDLCALL SDL_JoystickEventState(int state);
 
+#define SDL_JOYSTICK_AXIS_MAX   32767
+#define SDL_JOYSTICK_AXIS_MIN   -32768
 /**
  *  Get the current state of an axis control on a joystick.
  *
@@ -199,6 +243,18 @@ extern DECLSPEC int SDLCALL SDL_JoystickEventState(int state);
  */
 extern DECLSPEC Sint16 SDLCALL SDL_JoystickGetAxis(SDL_Joystick * joystick,
                                                    int axis);
+
+/**
+ *  Get the initial state of an axis control on a joystick.
+ *
+ *  The state is a value ranging from -32768 to 32767.
+ *
+ *  The axis indices start at index 0.
+ *
+ *  \return SDL_TRUE if this axis has any initial value, or SDL_FALSE if not.
+ */
+extern DECLSPEC SDL_bool SDLCALL SDL_JoystickGetAxisInitialState(SDL_Joystick * joystick,
+                                                   int axis, Sint16 *state);
 
 /**
  *  \name Hat positions
@@ -268,6 +324,6 @@ extern DECLSPEC SDL_JoystickPowerLevel SDLCALL SDL_JoystickCurrentPowerLevel(SDL
 #endif
 #include "close_code.h"
 
-#endif /* _SDL_joystick_h */
+#endif /* SDL_joystick_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

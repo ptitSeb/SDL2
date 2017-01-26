@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -57,7 +57,10 @@ extern HRESULT WIN_CoInitialize(void);
 extern void WIN_CoUninitialize(void);
 
 /* Returns SDL_TRUE if we're running on Windows Vista and newer */
-extern BOOL WIN_IsWindowsVistaOrGreater();
+extern BOOL WIN_IsWindowsVistaOrGreater(void);
+
+/* You need to SDL_free() the result of this call. */
+extern char *WIN_LookupAudioDeviceName(const WCHAR *name, const GUID *guid);
 
 #endif /* _INCLUDED_WINDOWS_H */
 

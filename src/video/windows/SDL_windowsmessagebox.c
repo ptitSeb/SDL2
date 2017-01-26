@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -452,9 +452,9 @@ WIN_ShowMessageBox(const SDL_MessageBoxData *messageboxdata, int *buttonid)
     }
 
     /* Align the buttons to the right/bottom. */
-    x = Size.cx - ButtonWidth - ButtonMargin;
+    x = Size.cx - (ButtonWidth + ButtonMargin) * messageboxdata->numbuttons;
     y = Size.cy - ButtonHeight - ButtonMargin;
-    for (i = 0; i < messageboxdata->numbuttons; ++i) {
+    for (i = messageboxdata->numbuttons - 1; i >= 0; --i) {
         SDL_bool isDefault;
 
         if (buttons[i].flags & SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT) {
@@ -466,7 +466,7 @@ WIN_ShowMessageBox(const SDL_MessageBoxData *messageboxdata, int *buttonid)
             FreeDialogData(dialog);
             return -1;
         }
-        x -= ButtonWidth + ButtonMargin;
+        x += ButtonWidth + ButtonMargin;
     }
 
     /* FIXME: If we have a parent window, get the Instance and HWND for them */

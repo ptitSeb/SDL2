@@ -1,6 +1,6 @@
 /*
  *  Simple DirectMedia Layer
- *  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+ *  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
  * 
  *  This software is provided 'as-is', without any express or implied
  *  warranty.  In no event will the authors be held liable for any damages
@@ -74,7 +74,42 @@ if (!_this->egl_data->NAME) \
 { \
     return SDL_SetError("Could not retrieve EGL function " #NAME); \
 }
-    
+
+static const char * SDL_EGL_GetErrorName(EGLint eglErrorCode)
+{
+#define SDL_EGL_ERROR_TRANSLATE(e) case e: return #e;
+    switch (eglErrorCode) {
+        SDL_EGL_ERROR_TRANSLATE(EGL_SUCCESS);
+        SDL_EGL_ERROR_TRANSLATE(EGL_NOT_INITIALIZED);
+        SDL_EGL_ERROR_TRANSLATE(EGL_BAD_ACCESS);
+        SDL_EGL_ERROR_TRANSLATE(EGL_BAD_ALLOC);
+        SDL_EGL_ERROR_TRANSLATE(EGL_BAD_ATTRIBUTE);
+        SDL_EGL_ERROR_TRANSLATE(EGL_BAD_CONTEXT);
+        SDL_EGL_ERROR_TRANSLATE(EGL_BAD_CONFIG);
+        SDL_EGL_ERROR_TRANSLATE(EGL_BAD_CURRENT_SURFACE);
+        SDL_EGL_ERROR_TRANSLATE(EGL_BAD_DISPLAY);
+        SDL_EGL_ERROR_TRANSLATE(EGL_BAD_SURFACE);
+        SDL_EGL_ERROR_TRANSLATE(EGL_BAD_MATCH);
+        SDL_EGL_ERROR_TRANSLATE(EGL_BAD_PARAMETER);
+        SDL_EGL_ERROR_TRANSLATE(EGL_BAD_NATIVE_PIXMAP);
+        SDL_EGL_ERROR_TRANSLATE(EGL_BAD_NATIVE_WINDOW);
+        SDL_EGL_ERROR_TRANSLATE(EGL_CONTEXT_LOST);
+    }
+    return "";
+}
+
+int SDL_EGL_SetErrorEx(const char * message, const char * eglFunctionName, EGLint eglErrorCode)
+{
+    const char * errorText = SDL_EGL_GetErrorName(eglErrorCode);
+    char altErrorText[32];
+    if (errorText[0] == '\0') {
+        /* An unknown-to-SDL error code was reported.  Report its hexadecimal value, instead of its name. */
+        SDL_snprintf(altErrorText, SDL_arraysize(altErrorText), "0x%x", (unsigned int)eglErrorCode);
+        errorText = altErrorText;
+    }
+    return SDL_SetError("%s (call to %s failed, reporting an error of %s)", message, eglFunctionName, errorText);
+}
+
 /* EGL implementation of SDL OpenGL ES support */
 #ifdef EGL_KHR_create_context        
 static int SDL_EGL_HasExtension(_THIS, const char *ext)
@@ -161,7 +196,7 @@ int
 SDL_EGL_LoadLibrary(_THIS, const char *egl_path, NativeDisplayType native_display)
 {
     void *dll_handle = NULL, *egl_dll_handle = NULL; /* The naming is counter intuitive, but hey, I just work here -- Gabriel */
-    char *path = NULL;
+    const char *path = NULL;
 #if SDL_VIDEO_DRIVER_WINDOWS || SDL_VIDEO_DRIVER_WINRT
     const char *d3dcompiler;
 #endif
@@ -265,7 +300,8 @@ SDL_EGL_LoadLibrary(_THIS, const char *egl_path, NativeDisplayType native_displa
     LOAD_FUNC(eglWaitGL);
     LOAD_FUNC(eglBindAPI);
     LOAD_FUNC(eglQueryString);
-    
+    LOAD_FUNC(eglGetError);
+
 #if !defined(__WINRT__)
 #if defined(PANDORA)/* || defined(CHIP)*/
     _this->egl_data->egl_display = _this->egl_data->eglGetDisplay(EGL_DEFAULT_DISPLAY);   // FrameBuffer mode only (no window mode)
@@ -280,8 +316,6 @@ SDL_EGL_LoadLibrary(_THIS, const char *egl_path, NativeDisplayType native_displa
         return SDL_SetError("Could not initialize EGL");
     }
 #endif
-
-    _this->gl_config.driver_loaded = 1;
 
     if (path) {
         SDL_strlcpy(_this->gl_config.driver_path, path, sizeof(_this->gl_config.driver_path) - 1);
@@ -386,7 +420,7 @@ SDL_EGL_ChooseConfig(_THIS)
         configs, SDL_arraysize(configs),
         &found_configs) == EGL_FALSE ||
         found_configs == 0) {
-        return SDL_SetError("Couldn't find matching EGL config");
+        return SDL_EGL_SetError("Couldn't find matching EGL config", "eglChooseConfig");
     }
 
     /* eglChooseConfig returns a number of configurations that match or exceed the requested attribs. */
@@ -505,15 +539,23 @@ SDL_EGL_CreateContext(_THIS, EGLSurface egl_surface)
                                       share_context, attribs);
 
     if (egl_context == EGL_NO_CONTEXT) {
-        SDL_SetError("Could not create EGL context");
+        SDL_EGL_SetError("Could not create EGL context", "eglCreateContext");
         return NULL;
     }
 
     _this->egl_data->egl_swapinterval = 0;
 
     if (SDL_EGL_MakeCurrent(_this, egl_surface, egl_context) < 0) {
+        /* Save the SDL error set by SDL_EGL_MakeCurrent */
+        char errorText[1024];
+        SDL_strlcpy(errorText, SDL_GetError(), SDL_arraysize(errorText));
+
+        /* Delete the context, which may alter the value returned by SDL_GetError() */
         SDL_EGL_DeleteContext(_this, egl_context);
-        SDL_SetError("Could not make EGL context current");
+
+        /* Restore the SDL error */
+        SDL_SetError("%s", errorText);
+
         return NULL;
     }
 
@@ -537,7 +579,7 @@ SDL_EGL_MakeCurrent(_THIS, EGLSurface egl_surface, SDL_GLContext context)
     } else {
         if (!_this->egl_data->eglMakeCurrent(_this->egl_data->egl_display,
             egl_surface, egl_surface, egl_context)) {
-            return SDL_SetError("Unable to make EGL context current");
+            return SDL_EGL_SetError("Unable to make EGL context current", "eglMakeCurrent");
         }
     }
       
@@ -559,7 +601,7 @@ SDL_EGL_SetSwapInterval(_THIS, int interval)
         return 0;
     }
     
-    return SDL_SetError("Unable to set the EGL swap interval");
+    return SDL_EGL_SetError("Unable to set the EGL swap interval", "eglSwapInterval");
 }
 
 int
@@ -573,10 +615,13 @@ SDL_EGL_GetSwapInterval(_THIS)
     return _this->egl_data->egl_swapinterval;
 }
 
-void
+int
 SDL_EGL_SwapBuffers(_THIS, EGLSurface egl_surface)
 {
-    _this->egl_data->eglSwapBuffers(_this->egl_data->egl_display, egl_surface);
+    if (!_this->egl_data->eglSwapBuffers(_this->egl_data->egl_display, egl_surface)) {
+        return SDL_EGL_SetError("unable to show color buffer in an OS-native window", "eglSwapBuffers");
+    }
+    return 0;
 }
 
 void
@@ -599,6 +644,8 @@ SDL_EGL_DeleteContext(_THIS, SDL_GLContext context)
 EGLSurface *
 SDL_EGL_CreateSurface(_THIS, NativeWindowType nw) 
 {
+    EGLSurface * surface;
+
     if (SDL_EGL_ChooseConfig(_this) != 0) {
         return EGL_NO_SURFACE;
     }
@@ -617,7 +664,7 @@ SDL_EGL_CreateSurface(_THIS, NativeWindowType nw)
     }
 #endif    
     
-    return _this->egl_data->eglCreateWindowSurface(
+    surface = _this->egl_data->eglCreateWindowSurface(
             _this->egl_data->egl_display,
             _this->egl_data->egl_config,
 #if defined(PANDORA) /*|| defined(CHIP)*/
@@ -625,6 +672,10 @@ SDL_EGL_CreateSurface(_THIS, NativeWindowType nw)
 #else
             nw, NULL);
 #endif
+    if (surface == EGL_NO_SURFACE) {
+        SDL_EGL_SetError("unable to create an EGL window surface", "eglCreateWindowSurface");
+    }
+    return surface;
 }
 
 void

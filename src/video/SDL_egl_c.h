@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -20,8 +20,8 @@
 */
 #include "../SDL_internal.h"
 
-#ifndef _SDL_egl_h
-#define _SDL_egl_h
+#ifndef SDL_egl_h_
+#define SDL_egl_h_
 
 #if SDL_VIDEO_OPENGL_EGL
 
@@ -79,6 +79,8 @@ typedef struct SDL_EGL_VideoData
     
     EGLBoolean(EGLAPIENTRY *eglBindAPI)(EGLenum);
 
+    EGLint(EGLAPIENTRY *eglGetError)(void);
+
 } SDL_EGL_VideoData;
 
 /* OpenGLES functions */
@@ -96,14 +98,18 @@ extern void SDL_EGL_DestroySurface(_THIS, EGLSurface egl_surface);
 /* These need to be wrapped to get the surface for the window by the platform GLES implementation */
 extern SDL_GLContext SDL_EGL_CreateContext(_THIS, EGLSurface egl_surface);
 extern int SDL_EGL_MakeCurrent(_THIS, EGLSurface egl_surface, SDL_GLContext context);
-extern void SDL_EGL_SwapBuffers(_THIS, EGLSurface egl_surface);
+extern int SDL_EGL_SwapBuffers(_THIS, EGLSurface egl_surface);
+
+/* SDL Error-reporting */
+extern int SDL_EGL_SetErrorEx(const char * message, const char * eglFunctionName, EGLint eglErrorCode);
+#define SDL_EGL_SetError(message, eglFunctionName) SDL_EGL_SetErrorEx(message, eglFunctionName, _this->egl_data->eglGetError())
 
 /* A few of useful macros */
 
-#define SDL_EGL_SwapWindow_impl(BACKEND) void \
+#define SDL_EGL_SwapWindow_impl(BACKEND) int \
 BACKEND ## _GLES_SwapWindow(_THIS, SDL_Window * window) \
 {\
-    SDL_EGL_SwapBuffers(_this, ((SDL_WindowData *) window->driverdata)->egl_surface);\
+    return SDL_EGL_SwapBuffers(_this, ((SDL_WindowData *) window->driverdata)->egl_surface);\
 }
 
 #define SDL_EGL_MakeCurrent_impl(BACKEND) int \
@@ -125,6 +131,6 @@ BACKEND ## _GLES_CreateContext(_THIS, SDL_Window * window) \
 
 #endif /* SDL_VIDEO_OPENGL_EGL */
 
-#endif /* _SDL_egl_h */
+#endif /* SDL_egl_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

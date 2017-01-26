@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -27,7 +27,7 @@
 static const char *dbus_library = "libdbus-1.so.3";
 static void *dbus_handle = NULL;
 static unsigned int screensaver_cookie = 0;
-static SDL_DBusContext dbus = {0};
+static SDL_DBusContext dbus;
 
 static int
 LoadDBUSSyms(void)
@@ -237,3 +237,5 @@ SDL_DBus_ScreensaverInhibit(SDL_bool inhibit)
     }
 }
 #endif
+
+/* vi: set ts=4 sw=4 expandtab: */

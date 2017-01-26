@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -103,7 +103,10 @@ void RunBasicTest()
 #define NInter (CountTo/CountInc/NThreads)
 #define Expect (CountTo-NInter*CountInc*NThreads)
 
-SDL_COMPILE_TIME_ASSERT(size, CountTo>0); /* check for rollover */
+enum {
+   CountTo_GreaterThanZero = CountTo > 0,
+};
+SDL_COMPILE_TIME_ASSERT(size, CountTo_GreaterThanZero); /* check for rollover */
 
 static SDL_atomic_t good = { 42 };
 

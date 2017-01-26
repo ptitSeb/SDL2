@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -25,8 +25,8 @@
  *  Include file for SDL event handling.
  */
 
-#ifndef _SDL_events_h
-#define _SDL_events_h
+#ifndef SDL_events_h_
+#define SDL_events_h_
 
 #include "SDL_stdinc.h"
 #include "SDL_error.h"
@@ -431,7 +431,7 @@ typedef struct SDL_MultiGestureEvent
 {
     Uint32 type;        /**< ::SDL_MULTIGESTURE */
     Uint32 timestamp;
-    SDL_TouchID touchId; /**< The touch device index */
+    SDL_TouchID touchId; /**< The touch device id */
     float dTheta;
     float dDist;
     float x;
@@ -749,6 +749,6 @@ extern DECLSPEC Uint32 SDLCALL SDL_RegisterEvents(int numevents);
 #endif
 #include "close_code.h"
 
-#endif /* _SDL_events_h */
+#endif /* SDL_events_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

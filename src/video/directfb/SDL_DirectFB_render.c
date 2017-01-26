@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -1273,7 +1273,7 @@ DirectFB_RenderReadPixels(SDL_Renderer * renderer, const SDL_Rect * rect,
                      Uint32 format, void * pixels, int pitch)
 {
     Uint32 sdl_format;
-    void * laypixels;
+    unsigned char* laypixels;
     int laypitch;
     DFBSurfacePixelFormat dfb_format;
     DirectFB_RenderData *data = (DirectFB_RenderData *) renderer->driverdata;
@@ -1303,7 +1303,7 @@ DirectFB_RenderWritePixels(SDL_Renderer * renderer, const SDL_Rect * rect,
     SDL_Window *window = renderer->window;
     SDL_DFB_WINDOWDATA(window);
     Uint32 sdl_format;
-    void * laypixels;
+    unsigned char* laypixels;
     int laypitch;
     DFBSurfacePixelFormat dfb_format;
 

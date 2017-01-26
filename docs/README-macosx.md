@@ -86,12 +86,12 @@ so called "bundle", which basically is a fancy folder with a name like
 To get this build automatically, add something like the following rule to
 your Makefile.am:
 
-bundle_contents = APP_NAME.app/Contents
-APP_NAME_bundle: EXE_NAME
-	mkdir -p $(bundle_contents)/MacOS
-	mkdir -p $(bundle_contents)/Resources
-	echo "APPL????" > $(bundle_contents)/PkgInfo
-	$(INSTALL_PROGRAM) $< $(bundle_contents)/MacOS/
+    bundle_contents = APP_NAME.app/Contents
+    APP_NAME_bundle: EXE_NAME
+    	mkdir -p $(bundle_contents)/MacOS
+    	mkdir -p $(bundle_contents)/Resources
+    	echo "APPL????" > $(bundle_contents)/PkgInfo
+    	$(INSTALL_PROGRAM) $< $(bundle_contents)/MacOS/
 
 You should replace EXE_NAME with the name of the executable. APP_NAME is what
 will be visible to the user in the Finder. Usually it will be the same
@@ -105,13 +105,13 @@ more. For each of your target applications, you need a separate rule.
 If you want the created bundles to be installed, you may want to add this
 rule to your Makefile.am:
 
-install-exec-hook: APP_NAME_bundle
-	rm -rf $(DESTDIR)$(prefix)/Applications/APP_NAME.app
-	mkdir -p $(DESTDIR)$(prefix)/Applications/
-	cp -r $< /$(DESTDIR)$(prefix)Applications/
+    install-exec-hook: APP_NAME_bundle
+    	rm -rf $(DESTDIR)$(prefix)/Applications/APP_NAME.app
+    	mkdir -p $(DESTDIR)$(prefix)/Applications/
+    	cp -r $< /$(DESTDIR)$(prefix)Applications/
 
 This rule takes the Bundle created by the rule from step 3 and installs them
-into $(DESTDIR)$(prefix)/Applications/.
+into "$(DESTDIR)$(prefix)/Applications/".
 
 Again, if you want to install multiple applications, you will have to augment
 the make rule accordingly.
@@ -126,9 +126,13 @@ there are some more things you should do before shipping your product...
    unless you also install SDL on that other computer. A good solution
    for this dilemma is to static link against SDL. On OS X, you can
    achieve that by linking against the libraries listed by
-     sdl-config --static-libs
+
+       sdl-config --static-libs
+
    instead of those listed by
-     sdl-config --libs
+
+       sdl-config --libs
+
    Depending on how exactly SDL is integrated into your build systems, the
    way to achieve that varies, so I won't describe it here in detail
 2) Add an 'Info.plist' to your application. That is a special XML file which
