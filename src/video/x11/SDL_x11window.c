@@ -613,7 +613,8 @@ X11_CreateWindow(_THIS, SDL_Window * window)
         windowdata->egl_surface = SDL_EGL_CreateSurface(_this, (NativeWindowType) w);
 
         if (windowdata->egl_surface == EGL_NO_SURFACE) {
-            X11_XDestroyWindow(display, w);
+         // don't destroy XWindow, it will be destroy later anyway
+         //   X11_XDestroyWindow(display, w);
             return SDL_SetError("Could not create GLES window surface");
         }
 #else

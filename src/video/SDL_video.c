@@ -212,6 +212,8 @@ ShouldUseTextureFramebuffer()
 #if defined(PANDORA) || defined(CHIP)
     return SDL_TRUE;
 #else
+    if(SDL_getenv("SDL_VIDEO_GLES2")!=NULL)
+        return SDL_TRUE;
     {
         SDL_Window *window;
         SDL_GLContext context;
@@ -2969,8 +2971,20 @@ SDL_GL_ResetAttributes()
     _this->gl_config.accelerated = -1;  /* accelerated or not, both are fine */
     _this->gl_config.profile_mask = 0;
 #if SDL_VIDEO_OPENGL
-    _this->gl_config.major_version = 2;
-    _this->gl_config.minor_version = 1;
+    if(SDL_getenv("SDL_VIDEO_GLES2")!=NULL) {
+        if(strstr(SDL_getenv("SDL_VIDEO_GL_DRIVER"), "v2.so")!=NULL) {
+            _this->gl_config.major_version = 2;
+            _this->gl_config.minor_version = 0;
+            _this->gl_config.profile_mask = SDL_GL_CONTEXT_PROFILE_ES;
+        } else {
+            _this->gl_config.major_version = 1;
+            _this->gl_config.minor_version = 1;
+            _this->gl_config.profile_mask = SDL_GL_CONTEXT_PROFILE_ES;
+        }
+    } else {
+        _this->gl_config.major_version = 2;
+        _this->gl_config.minor_version = 1;
+    }
 #elif SDL_VIDEO_OPENGL_ES2
     _this->gl_config.major_version = 2;
     _this->gl_config.minor_version = 0;
