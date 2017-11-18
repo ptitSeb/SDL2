@@ -308,6 +308,7 @@ X11_ShowCursor(SDL_Cursor * cursor)
     return 0;
 }
 
+static void
 WarpMouseInternal(Window xwindow, const int x, const int y)
 {
     SDL_VideoData *videodata = (SDL_VideoData *) SDL_GetVideoDevice()->driverdata;
