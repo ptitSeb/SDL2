@@ -21,6 +21,7 @@
 
 #ifndef SDL_config_macosx_h_
 #define SDL_config_macosx_h_
+#define SDL_config_h_
 
 #include "SDL_platform.h"
 
@@ -36,16 +37,19 @@
 #endif
 
 /* Useful headers */
-#define HAVE_ALLOCA_H       1
-#define HAVE_SYS_TYPES_H    1
-#define HAVE_STDIO_H    1
 #define STDC_HEADERS    1
-#define HAVE_STRING_H   1
-#define HAVE_INTTYPES_H 1
-#define HAVE_STDINT_H   1
+#define HAVE_ALLOCA_H       1
 #define HAVE_CTYPE_H    1
+#define HAVE_FLOAT_H    1
+#define HAVE_INTTYPES_H 1
+#define HAVE_LIMITS_H   1
 #define HAVE_MATH_H 1
 #define HAVE_SIGNAL_H   1
+#define HAVE_STDINT_H   1
+#define HAVE_STDIO_H    1
+#define HAVE_STRING_H   1
+#define HAVE_SYS_TYPES_H    1
+#define HAVE_LIBUNWIND_H    1
 
 /* C library functions */
 #define HAVE_MALLOC 1
@@ -67,7 +71,6 @@
 #define HAVE_STRLEN 1
 #define HAVE_STRLCPY    1
 #define HAVE_STRLCAT    1
-#define HAVE_STRDUP 1
 #define HAVE_STRCHR 1
 #define HAVE_STRRCHR    1
 #define HAVE_STRSTR 1
@@ -171,6 +174,14 @@
 #endif
 #ifndef SDL_VIDEO_OPENGL_GLX
 #define SDL_VIDEO_OPENGL_GLX    1
+#endif
+
+/* Enable Vulkan support */
+/* Metal/MoltenVK/Vulkan only supported on 64-bit architectures with 10.11+ */
+#if TARGET_CPU_X86_64 && (MAC_OS_X_VERSION_MAX_ALLOWED >= 101100)
+#define SDL_VIDEO_VULKAN 1
+#else
+#define  SDL_VIDEO_VULKAN 0
 #endif
 
 /* Enable system power support */

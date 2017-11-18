@@ -27,12 +27,6 @@
 #error You should not be here.
 #endif
 
-/* so annoying. */
-#if defined(__thumb__) && (defined(__ARM_ARCH_6__) || defined(__ARM_ARCH_6J__) || defined(__ARM_ARCH_6K__) || defined(__ARM_ARCH_6T2__) || defined(__ARM_ARCH_6Z__) || defined(__ARM_ARCH_6ZK__))
-#define SDL_MemoryBarrierRelease SDL_MemoryBarrierRelease_REAL
-#define SDL_MemoryBarrierAcquire SDL_MemoryBarrierAcquire_REAL
-#endif
-
 #define SDL_SetError SDL_SetError_REAL
 #define SDL_Log SDL_Log_REAL
 #define SDL_LogVerbose SDL_LogVerbose_REAL
@@ -625,3 +619,31 @@
 #define SDL_GameControllerNumMappings SDL_GameControllerNumMappings_REAL
 #define SDL_GameControllerMappingForIndex SDL_GameControllerMappingForIndex_REAL
 #define SDL_JoystickGetAxisInitialState SDL_JoystickGetAxisInitialState_REAL
+#define SDL_JoystickGetDeviceType SDL_JoystickGetDeviceType_REAL
+#define SDL_JoystickGetType SDL_JoystickGetType_REAL
+#define SDL_MemoryBarrierReleaseFunction SDL_MemoryBarrierReleaseFunction_REAL
+#define SDL_MemoryBarrierAcquireFunction SDL_MemoryBarrierAcquireFunction_REAL
+#define SDL_JoystickGetDeviceInstanceID SDL_JoystickGetDeviceInstanceID_REAL
+#define SDL_utf8strlen SDL_utf8strlen_REAL
+#define SDL_LoadFile_RW SDL_LoadFile_RW_REAL
+#define SDL_wcscmp SDL_wcscmp_REAL
+#define SDL_ComposeCustomBlendMode SDL_ComposeCustomBlendMode_REAL
+#define SDL_DuplicateSurface SDL_DuplicateSurface_REAL
+#define SDL_Vulkan_LoadLibrary SDL_Vulkan_LoadLibrary_REAL
+#define SDL_Vulkan_GetVkGetInstanceProcAddr SDL_Vulkan_GetVkGetInstanceProcAddr_REAL
+#define SDL_Vulkan_UnloadLibrary SDL_Vulkan_UnloadLibrary_REAL
+#define SDL_Vulkan_GetInstanceExtensions SDL_Vulkan_GetInstanceExtensions_REAL
+#define SDL_Vulkan_CreateSurface SDL_Vulkan_CreateSurface_REAL
+#define SDL_Vulkan_GetDrawableSize SDL_Vulkan_GetDrawableSize_REAL
+#define SDL_LockJoysticks SDL_LockJoysticks_REAL
+#define SDL_UnlockJoysticks SDL_UnlockJoysticks_REAL
+#define SDL_GetMemoryFunctions SDL_GetMemoryFunctions_REAL
+#define SDL_SetMemoryFunctions SDL_SetMemoryFunctions_REAL
+#define SDL_GetNumAllocations SDL_GetNumAllocations_REAL
+#define SDL_NewAudioStream SDL_NewAudioStream_REAL
+#define SDL_AudioStreamPut SDL_AudioStreamPut_REAL
+#define SDL_AudioStreamGet SDL_AudioStreamGet_REAL
+#define SDL_AudioStreamClear SDL_AudioStreamClear_REAL
+#define SDL_AudioStreamAvailable SDL_AudioStreamAvailable_REAL
+#define SDL_FreeAudioStream SDL_FreeAudioStream_REAL
+#define SDL_AudioStreamFlush SDL_AudioStreamFlush_REAL

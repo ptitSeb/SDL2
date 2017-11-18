@@ -102,8 +102,8 @@ PND_create()
     device->VideoQuit = PND_videoquit;
     device->GetDisplayModes = PND_getdisplaymodes;
     device->SetDisplayMode = PND_setdisplaymode;
-    device->CreateWindow = PND_createwindow;
-    device->CreateWindowFrom = PND_createwindowfrom;
+    device->CreateSDLWindow = PND_createwindow;
+    device->CreateSDLWindowFrom = PND_createwindowfrom;
     device->SetWindowTitle = PND_setwindowtitle;
     device->SetWindowIcon = PND_setwindowicon;
     device->SetWindowPosition = PND_setwindowposition;
@@ -116,7 +116,9 @@ PND_create()
     device->RestoreWindow = PND_restorewindow;
     device->SetWindowGrab = PND_setwindowgrab;
     device->DestroyWindow = PND_destroywindow;
+#if 0
     device->GetWindowWMInfo = PND_getwindowwminfo;
+#endif
     device->GL_LoadLibrary = PND_gl_loadlibrary;
     device->GL_GetProcAddress = PND_gl_getprocaddres;
     device->GL_UnloadLibrary = PND_gl_unloadlibrary;
@@ -298,13 +300,14 @@ PND_destroywindow(_THIS, SDL_Window * window)
 /*****************************************************************************/
 /* SDL Window Manager function                                               */
 /*****************************************************************************/
+#if 0
 SDL_bool
 PND_getwindowwminfo(_THIS, SDL_Window * window, struct SDL_SysWMinfo *info)
 {
     if (info->version.major <= SDL_MAJOR_VERSION) {
         return SDL_TRUE;
     } else {
-        SDL_SetError("application not compiled with SDL %d.%d\n",
+        SDL_SetError("application not compiled with SDL %d.%d",
                      SDL_MAJOR_VERSION, SDL_MINOR_VERSION);
         return SDL_FALSE;
     }
@@ -312,6 +315,7 @@ PND_getwindowwminfo(_THIS, SDL_Window * window, struct SDL_SysWMinfo *info)
     /* Failed to get window manager information */
     return SDL_FALSE;
 }
+#endif
 
 /*****************************************************************************/
 /* SDL OpenGL/OpenGL ES functions                                            */
@@ -637,7 +641,7 @@ PND_gl_createcontext(_THIS, SDL_Window * window)
 
 
     if (wdata->gles_surface == 0) {
-        SDL_SetError("Error : eglCreateWindowSurface failed;\n");
+        SDL_SetError("Error : eglCreateWindowSurface failed;");
         return NULL;
     }
 

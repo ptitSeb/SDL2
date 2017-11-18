@@ -20,8 +20,8 @@
 */
 #include "../../SDL_internal.h"
 
-#ifndef _SDL_vivanteplatform_h
-#define _SDL_vivanteplatform_h
+#ifndef SDL_vivanteplatform_h_
+#define SDL_vivanteplatform_h_
 
 #if SDL_VIDEO_DRIVER_VIVANTE
 
@@ -36,10 +36,12 @@
 #endif
 
 extern int VIVANTE_SetupPlatform(_THIS);
+extern char *VIVANTE_GetDisplayName(_THIS);
+extern void VIVANTE_UpdateDisplayScale(_THIS);
 extern void VIVANTE_CleanupPlatform(_THIS);
 
 #endif /* SDL_VIDEO_DRIVER_VIVANTE */
 
-#endif /* _SDL_vivanteplatform_h */
+#endif /* SDL_vivanteplatform_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

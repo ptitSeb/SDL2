@@ -248,6 +248,8 @@ AddHIDElement(const void *value, void *parameter)
                         switch (usage) {
                             case kHIDUsage_Sim_Rudder:
                             case kHIDUsage_Sim_Throttle:
+                            case kHIDUsage_Sim_Accelerator:
+                            case kHIDUsage_Sim_Brake:
                                 if (!ElementAlreadyAdded(cookie, pDevice->firstAxis)) {
                                     element = (recElement *) SDL_calloc(1, sizeof (recElement));
                                     if (element) {
@@ -441,6 +443,12 @@ JoystickDeviceWasAddedCallback(void *ctx, IOReturn res, void *sender, IOHIDDevic
     if (!GetDeviceInfo(ioHIDDeviceObject, device)) {
         SDL_free(device);
         return;   /* not a device we care about, probably. */
+    }
+
+    if (SDL_IsGameControllerNameAndGUID(device->product, device->guid) &&
+        SDL_ShouldIgnoreGameController(device->product, device->guid)) {
+        SDL_free(device);
+        return;
     }
 
     /* Get notified when this device is disconnected. */

@@ -43,7 +43,7 @@ extern "C" {
 #if WRAP_BMODE
 /* This wrapper is here so that the driverdata can be freed without freeing
    the display_mode structure */
-typedef struct SDL_DisplayModeData {
+struct SDL_DisplayModeData {
 	display_mode *bmode;
 };
 #endif
@@ -310,7 +310,7 @@ int BE_SetDisplayMode(_THIS, SDL_VideoDisplay *display, SDL_DisplayMode *mode){
 	}
 
 	if(bscreen.SetMode(bmode) != B_OK) {
-		return SDL_SetError("Bad video mode\n");
+		return SDL_SetError("Bad video mode");
 	}
 	
 	free(bmode_list);

@@ -21,6 +21,7 @@
 
 #ifndef SDL_config_iphoneos_h_
 #define SDL_config_iphoneos_h_
+#define SDL_config_h_
 
 #include "SDL_platform.h"
 
@@ -32,16 +33,18 @@
 
 #define HAVE_GCC_ATOMICS    1
 
-#define HAVE_ALLOCA_H       1
-#define HAVE_SYS_TYPES_H    1
-#define HAVE_STDIO_H    1
 #define STDC_HEADERS    1
-#define HAVE_STRING_H   1
-#define HAVE_INTTYPES_H 1
-#define HAVE_STDINT_H   1
+#define HAVE_ALLOCA_H       1
 #define HAVE_CTYPE_H    1
+#define HAVE_INTTYPES_H 1
+#define HAVE_LIMITS_H   1
 #define HAVE_MATH_H 1
 #define HAVE_SIGNAL_H   1
+#define HAVE_STDINT_H   1
+#define HAVE_STDIO_H    1
+#define HAVE_STRING_H   1
+#define HAVE_SYS_TYPES_H    1
+#define HAVE_LIBUNWIND_H    1
 
 /* C library functions */
 #define HAVE_MALLOC 1
@@ -64,7 +67,6 @@
 #define HAVE_STRLEN 1
 #define HAVE_STRLCPY    1
 #define HAVE_STRLCAT    1
-#define HAVE_STRDUP 1
 #define HAVE_STRCHR 1
 #define HAVE_STRRCHR    1
 #define HAVE_STRSTR 1
@@ -137,6 +139,13 @@
 #define SDL_VIDEO_OPENGL_ES 1
 #define SDL_VIDEO_RENDER_OGL_ES 1
 #define SDL_VIDEO_RENDER_OGL_ES2    1
+
+/* Enable Vulkan support on 64-bit devices when an iOS 8+ SDK is used. */
+#if !TARGET_OS_SIMULATOR && !TARGET_CPU_ARM && defined(__IPHONE_8_0)
+#define SDL_VIDEO_VULKAN 1
+#else
+#define SDL_VIDEO_VULKAN 0
+#endif
 
 /* Enable system power support */
 #define SDL_POWER_UIKIT 1

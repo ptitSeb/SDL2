@@ -26,7 +26,6 @@
 /* System dependent filesystem routines                                */
 
 #include <unistd.h>
-#include <errno.h>
 
 #include "SDL_error.h"
 #include "SDL_filesystem.h"
@@ -37,6 +36,7 @@ char *
 SDL_GetBasePath(void)
 {
     /* The current working directory is / on Android */
+    SDL_Unsupported();
     return NULL;
 }
 

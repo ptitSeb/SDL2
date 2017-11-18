@@ -42,7 +42,7 @@ MIR_CreateWindowFramebuffer(_THIS, SDL_Window* window, Uint32* format,
     mir_data->software = SDL_TRUE;
 
     if (MIR_CreateWindow(_this, window) < 0)
-        return SDL_SetError("Failed to created a mir window.");
+        return SDL_SetError("Failed to create a mir window.");
 
     *format = MIR_GetSDLPixelFormat(mir_data->pixel_format);
     if (*format == SDL_PIXELFORMAT_UNKNOWN)
@@ -70,7 +70,7 @@ MIR_UpdateWindowFramebuffer(_THIS, SDL_Window* window,
     char* s_dest;
     char* pixels;
 
-    bs = MIR_mir_surface_get_buffer_stream(mir_window->surface);
+    bs = MIR_mir_window_get_buffer_stream(mir_window->window);
     MIR_mir_buffer_stream_get_graphics_region(bs, &region);
 
     s_dest = region.vaddr;

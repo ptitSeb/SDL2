@@ -52,6 +52,9 @@ struct joystick_hwdata
     } abs_correct[ABS_MAX];
 
     int fresh;
+
+    /* Steam Controller support */
+    SDL_bool m_bSteamController;
 };
 
 /* vi: set ts=4 sw=4 expandtab: */

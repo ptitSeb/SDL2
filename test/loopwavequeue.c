@@ -25,12 +25,11 @@
 #include <signal.h>
 #endif
 
-struct
+static struct
 {
     SDL_AudioSpec spec;
     Uint8 *sound;               /* Pointer to wave data */
     Uint32 soundlen;            /* Length of wave data */
-    int soundpos;               /* Current play position */
 } wave;
 
 

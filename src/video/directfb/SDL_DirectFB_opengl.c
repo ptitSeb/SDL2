@@ -117,9 +117,9 @@ DirectFB_GL_LoadLibrary(_THIS, const char *path)
 
 
     if (path == NULL) {
-        path = SDL_getenv("SDL_VIDEO_GL_DRIVER");
+        path = SDL_getenv("SDL_OPENGL_LIBRARY");
         if (path == NULL) {
-            path = "libGL.so";
+            path = "libGL.so.1";
         }
     }
 
@@ -243,13 +243,7 @@ int
 DirectFB_GL_SwapWindow(_THIS, SDL_Window * window)
 {
     SDL_DFB_WINDOWDATA(window);
-    DFBRegion region;
     DirectFB_GLContext *p;
-
-    region.x1 = 0;
-    region.y1 = 0;
-    region.x2 = window->w;
-    region.y2 = window->h;
 
 #if 0
     if (devdata->glFinish)

@@ -21,6 +21,7 @@
 
 #ifndef SDL_config_winrt_h_
 #define SDL_config_winrt_h_
+#define SDL_config_h_
 
 #include "SDL_platform.h"
 
@@ -97,13 +98,14 @@ typedef unsigned int uintptr_t;
 #define HAVE_XINPUT_H 1
 #endif
 #define HAVE_LIBC 1
-#define HAVE_STDIO_H 1
 #define STDC_HEADERS 1
-#define HAVE_STRING_H 1
 #define HAVE_CTYPE_H 1
-#define HAVE_MATH_H 1
 #define HAVE_FLOAT_H 1
+#define HAVE_LIMITS_H 1
+#define HAVE_MATH_H 1
 #define HAVE_SIGNAL_H 1
+#define HAVE_STDIO_H 1
+#define HAVE_STRING_H 1
 
 /* C library functions */
 #define HAVE_MALLOC 1

@@ -525,3 +525,5 @@ SDLTest_RandomAsciiStringOfSize(int size)
 
     return string;
 }
+
+/* vi: set ts=4 sw=4 expandtab: */
