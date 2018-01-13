@@ -68,7 +68,7 @@ X11_GLES_GetVisual(_THIS, Display * display, int screen)
         /* The EGL library wasn't loaded, SDL_GetError() should have info */
         return NULL;
     }
-
+#ifdef PANDORA
     if (_this->egl_data->eglGetConfigAttrib(_this->egl_data->egl_display,
                                             _this->egl_data->egl_config,
                                             EGL_NATIVE_VISUAL_ID,
@@ -78,7 +78,9 @@ X11_GLES_GetVisual(_THIS, Display * display, int screen)
         egl_visualinfo = X11_XGetVisualInfo(display,
                                         VisualScreenMask,
                                         &vi_in, &out_count);
-    } else {
+    } else 
+#endif
+    {
         vi_in.screen = screen;
         vi_in.visualid = visual_id;
         egl_visualinfo = X11_XGetVisualInfo(display, VisualScreenMask | VisualIDMask, &vi_in, &out_count);

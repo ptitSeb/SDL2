@@ -765,11 +765,18 @@ SDL_EGL_DeleteContext(_THIS, SDL_GLContext context)
         
 }
 
+#ifdef PANDORA
+static EGLSurface *fb_surface = NULL;   // only 1 surface at a time on framebuffer
+#endif
+
 EGLSurface *
 SDL_EGL_CreateSurface(_THIS, NativeWindowType nw) 
 {
     EGLSurface * surface;
-
+#ifdef PANDORA
+    if(fb_surface)
+        return fb_surface;
+#endif
     if (SDL_EGL_ChooseConfig(_this) != 0) {
         return EGL_NO_SURFACE;
     }
@@ -799,6 +806,9 @@ SDL_EGL_CreateSurface(_THIS, NativeWindowType nw)
     if (surface == EGL_NO_SURFACE) {
         SDL_EGL_SetError("unable to create an EGL window surface", "eglCreateWindowSurface");
     }
+#ifdef PANDORA
+    fb_surface = surface;
+#endif
     return surface;
 }
 
@@ -808,10 +818,15 @@ SDL_EGL_DestroySurface(_THIS, EGLSurface egl_surface)
     if (!_this->egl_data) {
         return;
     }
-    
+#ifdef PANDORA
+    if (!fb_surface)
+        return;
+    fb_surface = NULL;
+#endif    
     if (egl_surface != EGL_NO_SURFACE) {
         _this->egl_data->eglDestroySurface(_this->egl_data->egl_display, egl_surface);
     }
+
 }
 
 #endif /* SDL_VIDEO_OPENGL_EGL */
