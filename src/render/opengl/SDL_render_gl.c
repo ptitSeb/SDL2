@@ -542,7 +542,11 @@ GL_CreateRenderer(SDL_Window * window, Uint32 flags)
         renderer->info.texture_formats[renderer->info.num_texture_formats++] = SDL_PIXELFORMAT_NV12;
         renderer->info.texture_formats[renderer->info.num_texture_formats++] = SDL_PIXELFORMAT_NV21;
     }
-
+#ifdef PANDORA
+    renderer->info.texture_formats[renderer->info.num_texture_formats++] = SDL_PIXELFORMAT_RGB565;
+    renderer->info.texture_formats[renderer->info.num_texture_formats++] = SDL_PIXELFORMAT_RGBA5551;
+    renderer->info.texture_formats[renderer->info.num_texture_formats++] = SDL_PIXELFORMAT_RGBA4444;
+#endif
 #ifdef __MACOSX__
     renderer->info.texture_formats[renderer->info.num_texture_formats++] = SDL_PIXELFORMAT_UYVY;
 #endif
@@ -692,6 +696,23 @@ convert_format(GL_RenderData *renderdata, Uint32 pixel_format,
         *format = GL_LUMINANCE;
         *type = GL_UNSIGNED_BYTE;
         break;
+#ifdef PANDORA
+    case SDL_PIXELFORMAT_RGB565:
+        *internalFormat = GL_RGB5;
+        *format = GL_RGB;
+        *type = GL_UNSIGNED_SHORT_5_6_5;
+        break;
+    case SDL_PIXELFORMAT_RGBA5551:
+        *internalFormat = GL_RGB5_A1;
+        *format = GL_RGBA;
+        *type = GL_UNSIGNED_SHORT_5_5_5_1;
+        break;
+    case SDL_PIXELFORMAT_RGBA4444:
+        *internalFormat = GL_RGBA4;
+        *format = GL_RGBA;
+        *type = GL_UNSIGNED_SHORT_4_4_4_4;
+        break;
+#endif
 #ifdef __MACOSX__
     case SDL_PIXELFORMAT_UYVY:
         *internalFormat = GL_RGB8;
