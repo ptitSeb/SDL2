@@ -416,6 +416,9 @@ SDL_JoystickGetButton(SDL_Joystick * joystick, int button)
     if (!SDL_PrivateJoystickValid(joystick)) {
         return (0);
     }
+    if (button<0) { // can happens on Pandora, joystick with no buttons
+        return 0;
+    }
     if (button < joystick->nbuttons) {
         state = joystick->buttons[button];
     } else {
