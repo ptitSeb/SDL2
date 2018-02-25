@@ -1421,6 +1421,19 @@ X11_SetWindowFullscreen(_THIS, SDL_Window * window, SDL_VideoDisplay * _display,
 int
 X11_SetWindowGammaRamp(_THIS, SDL_Window * window, const Uint16 * ramp)
 {
+#ifdef PANDORA
+    float new_gamma;
+    char tmp_gamma[51];
+    if(ramp[128])
+        new_gamma = log(0.5)/log(ramp[128]/65535.0);
+    else
+        new_gamma = 0.0f;
+    if(new_gamma!=0.0f)
+        snprintf(tmp_gamma, 50,"sudo /usr/pandora/scripts/op_gamma.sh %.2f", new_gamma);
+    else
+        snprintf(tmp_gamma, 50,"sudo /usr/pandora/scripts/op_gamma.sh 0");
+    system(tmp_gamma);
+#else
     SDL_WindowData *data = (SDL_WindowData *) window->driverdata;
     Display *display = data->videodata->display;
     Visual *visual = data->visual;
@@ -1430,7 +1443,6 @@ X11_SetWindowGammaRamp(_THIS, SDL_Window * window, const Uint16 * ramp)
     int rmask, gmask, bmask;
     int rshift, gshift, bshift;
     int i;
-
     if (visual->class != DirectColor) {
         return SDL_SetError("Window doesn't have DirectColor visual");
     }
@@ -1481,7 +1493,7 @@ X11_SetWindowGammaRamp(_THIS, SDL_Window * window, const Uint16 * ramp)
     X11_XStoreColors(display, colormap, colorcells, ncolors);
     X11_XFlush(display);
     SDL_free(colorcells);
-
+#endif
     return 0;
 }
 
