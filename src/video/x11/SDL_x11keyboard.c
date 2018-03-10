@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2018 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -148,6 +148,9 @@ static const struct {
     { XK_apostrophe, SDL_SCANCODE_APOSTROPHE },
     { XK_bracketleft, SDL_SCANCODE_LEFTBRACKET },
     { XK_bracketright, SDL_SCANCODE_RIGHTBRACKET },
+#ifdef PANDORA
+    { 0x1008FF65, SDL_SCANCODE_APPLICATION },
+#endif
 };
 
 static const struct

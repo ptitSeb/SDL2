@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2018 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -567,7 +567,7 @@ static const SDL_Scancode pandora_scancode_table[] = {
     /*  144 */  SDL_SCANCODE_UNKNOWN,
     /*  145 */  SDL_SCANCODE_UNKNOWN,
     /*  146 */  SDL_SCANCODE_UNKNOWN,
-    /* 147 */   SDL_SCANCODE_UNKNOWN,   /* XF86Xfer */
+    /* 147 */   SDL_SCANCODE_APPLICATION,   /* XF86Xfer */
     /* 148 */   SDL_SCANCODE_APP1,      /* XF86Launch1 */
     /* 149 */   SDL_SCANCODE_APP2,      /* XF86Launch2 */
     /* 150 */   SDL_SCANCODE_WWW,
