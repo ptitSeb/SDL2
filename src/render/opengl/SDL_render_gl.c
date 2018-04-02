@@ -541,9 +541,11 @@ GL_CreateRenderer(SDL_Window * window, Uint32 flags)
         renderer->info.texture_formats[renderer->info.num_texture_formats++] = SDL_PIXELFORMAT_NV21;
     }
 #ifdef PANDORA
-    renderer->info.texture_formats[renderer->info.num_texture_formats++] = SDL_PIXELFORMAT_RGB565;
-    renderer->info.texture_formats[renderer->info.num_texture_formats++] = SDL_PIXELFORMAT_RGBA5551;
-    renderer->info.texture_formats[renderer->info.num_texture_formats++] = SDL_PIXELFORMAT_RGBA4444;
+    if(!getenv("SDL_NO_EXTRA_FORMATS")) {
+        renderer->info.texture_formats[renderer->info.num_texture_formats++] = SDL_PIXELFORMAT_RGB565;
+        renderer->info.texture_formats[renderer->info.num_texture_formats++] = SDL_PIXELFORMAT_RGBA5551;
+        renderer->info.texture_formats[renderer->info.num_texture_formats++] = SDL_PIXELFORMAT_RGBA4444;
+    }
 #endif
 #ifdef __MACOSX__
     renderer->info.texture_formats[renderer->info.num_texture_formats++] = SDL_PIXELFORMAT_UYVY;
