@@ -25,6 +25,56 @@
 
 /* Functions to perform alpha blended blitting */
 
+#ifdef NEON
+/* NEON optimized blitter callers */
+#define make_neon_caller(name, neon_name) \
+extern void neon_name(void *dst, const void *src, int count); \
+static void name(SDL_BlitInfo *info) \
+{ \
+	int width = info->dst_w; \
+	int height = info->dst_h; \
+	Uint8 *src = info->src; \
+	Uint8 *dst = info->dst; \
+	int dstBpp = info->dst_fmt->BytesPerPixel; \
+	int srcstride = width * 4 + info->src_skip; \
+	int dststride = width * dstBpp + info->dst_skip; \
+\
+	while ( height-- ) { \
+	    __builtin_prefetch(dst + dststride); \
+	    neon_name(dst, src, width); \
+	    src += srcstride; \
+	    dst += dststride; \
+	} \
+}
+
+#define make_neon_callerS(name, neon_name) \
+extern void neon_name(void *dst, const void *src, int count, unsigned int alpha); \
+static void name(SDL_BlitInfo *info) \
+{ \
+	int width = info->dst_w; \
+	int height = info->dst_h; \
+	Uint8 *src = info->src; \
+	Uint8 *dst = info->dst; \
+	int srcskip = info->src_skip; \
+	int dstskip = info->dst_skip; \
+	unsigned alpha = info->a;\
+\
+	while ( height-- ) { \
+	    neon_name(dst, src, width, alpha); \
+	    src += width * 4 + srcskip; \
+	    dst += width * 4 + dstskip; \
+	} \
+}
+
+make_neon_caller(BlitABGRtoXRGBalpha_neon, neon_ABGRtoXRGBalpha)
+make_neon_caller(BlitARGBtoXRGBalpha_neon, neon_ARGBtoXRGBalpha)
+make_neon_caller(BlitABGRtoRGB565alpha_neon, neon_ABGRtoRGB565alpha)
+make_neon_caller(BlitARGBtoRGB565alpha_neon, neon_ARGBtoRGB565alpha)
+make_neon_callerS(BlitABGRtoXRGBalphaS_neon, neon_ABGRtoXRGBalphaS)
+make_neon_callerS(BlitARGBtoXRGBalphaS_neon, neon_ARGBtoXRGBalphaS)
+
+#endif /* NEON */
+
 /* N->1 blending with per-surface alpha */
 static void
 BlitNto1SurfaceAlpha(SDL_BlitInfo * info)
@@ -1279,6 +1329,16 @@ SDL_CalculateBlitA(SDL_Surface * surface)
             return BlitNto1PixelAlpha;
 
         case 2:
+#ifdef NEON
+                if(sf->BytesPerPixel == 4 && sf->Amask == 0xff000000
+                && sf->Gmask == 0xff00 && df->Gmask == 0x7e0) {
+                    if((sf->Bmask >> 3) == df->Bmask || (sf->Rmask >> 3) == df->Rmask)
+                        return BlitARGBtoRGB565alpha_neon;
+                    else
+                        return BlitABGRtoRGB565alpha_neon;
+                }
+                else
+#endif
                 if (sf->BytesPerPixel == 4 && sf->Amask == 0xff000000
                     && sf->Gmask == 0xff00
                     && ((sf->Rmask == 0xff && df->Rmask == 0x1f)
@@ -1309,10 +1369,27 @@ SDL_CalculateBlitA(SDL_Surface * surface)
 #endif
                 }
 #endif /* __MMX__ || __3dNOW__ */
+#ifdef NEON
+                if(sf->Rshift % 8 == 0
+                && sf->Gshift % 8 == 0
+                && sf->Bshift % 8 == 0
+                && sf->Ashift % 8 == 0)
+                {
+                    return BlitARGBtoXRGBalpha_neon;
+                }
+#endif
                 if (sf->Amask == 0xff000000) {
                     return BlitRGBtoRGBPixelAlpha;
                 }
             }
+#ifdef NEON
+            if (sf->Gmask == df->Gmask && sf->Rmask == df->Bmask && sf->Bmask == df->Rmask
+            && sf->Rshift % 8 == 0 && sf->Gshift % 8 == 0 && sf->Bshift % 8 == 0
+            && sf->Amask == 0xff000000)
+            {
+            return BlitABGRtoXRGBalpha_neon;
+            }
+#endif
             return BlitNtoNPixelAlpha;
 
         case 3:
@@ -1358,10 +1435,25 @@ SDL_CalculateBlitA(SDL_Surface * surface)
                         && sf->Bshift % 8 == 0 && SDL_HasMMX())
                         return BlitRGBtoRGBSurfaceAlphaMMX;
 #endif
+#ifdef NEON
+                    if(sf->Rshift % 8 == 0
+                    && sf->Gshift % 8 == 0
+                    && sf->Bshift % 8 == 0)
+                    {
+                        return BlitARGBtoXRGBalphaS_neon;
+                    }
+#endif
                     if ((sf->Rmask | sf->Gmask | sf->Bmask) == 0xffffff) {
                         return BlitRGBtoRGBSurfaceAlpha;
                     }
                 }
+#ifdef NEON
+                if (sf->Gmask == df->Gmask && sf->Rmask == df->Bmask && sf->Bmask == df->Rmask
+                    && sf->Rshift % 8 == 0 && sf->Gshift % 8 == 0 && sf->Bshift % 8 == 0)
+                {
+                    return BlitABGRtoXRGBalphaS_neon;
+                }
+#endif
                 return BlitNtoNSurfaceAlpha;
 
             case 3:

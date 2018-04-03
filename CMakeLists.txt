@@ -3,7 +3,7 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
 endif()
 
 cmake_minimum_required(VERSION 2.8.11)
-project(SDL2 C)
+project(SDL2 C ASM)
 
 # !!! FIXME: this should probably do "MACOSX_RPATH ON" as a target property
 # !!! FIXME:  for the SDL2 shared library (so you get an
@@ -282,6 +282,7 @@ set_option(SSE                 "Use SSE assembly routines" ${OPT_DEF_ASM})
 set_option(SSE2                "Use SSE2 assembly routines" ${OPT_DEF_SSEMATH})
 set_option(SSE3                "Use SSE3 assembly routines" ${OPT_DEF_SSEMATH})
 set_option(ALTIVEC             "Use Altivec assembly routines" ${OPT_DEF_ASM})
+set_option(NEON                "Use NEON assembly routines" ${OPT_DEF_NEONASM})
 set_option(DISKAUDIO           "Support the disk writer audio driver" ON)
 set_option(DUMMYAUDIO          "Support the dummy audio driver" ON)
 set_option(VIDEO_DIRECTFB      "Use DirectFB video driver" OFF)
@@ -609,6 +610,30 @@ if(ASSEMBLY)
         endif()
       endif()
     endif()
+
+    if(NEON)
+      set(CMAKE_REQUIRED_FLAGS "-mfpu=neon")
+      check_c_source_compiles("
+          #ifdef __MINGW32__
+          #include <_mingw.h>
+          #ifdef __MINGW64_VERSION_MAJOR
+          #include <arm_neon.h>
+          #else
+          #include <arm_neon.h>
+          #endif
+          #else
+          #include <arm_neon.h>
+          #endif
+          #ifndef __ARM_NEON__
+          #error Assembler CPP flag not enabled
+          #endif
+          int main(int argc, char **argv) { }" HAVE_NEON)
+      if(HAVE_NEON)
+        list(APPEND EXTRA_CFLAGS "-mfpu=neon")
+      endif()
+      set(CMAKE_REQUIRED_FLAGS ${ORIG_CMAKE_REQUIRED_FLAGS})
+    endif()
+
   elseif(MSVC_VERSION GREATER 1500)
     # TODO: SDL_cpuinfo.h needs to support the user's configuration wish
     # for MSVC - right now it is always activated
@@ -787,6 +812,12 @@ if(SDL_VIDEO)
     set(HAVE_VIDEO_DUMMY TRUE)
     set(HAVE_SDL_VIDEO TRUE)
   endif()
+endif()
+
+if(HAVE_NEON)
+  set_source_files_properties(${SDL2_SOURCE_DIR}/src/video/SDL_blit_A.c PROPERTIES COMPILE_FLAGS -DNEON)
+  set_source_files_properties(${SDL2_SOURCE_DIR}/src/video/SDL_blit_N.c PROPERTIES COMPILE_FLAGS -DNEON)
+  set(SOURCE_FILES ${SOURCE_FILES} ${SDL2_SOURCE_DIR}/src/video/SDL_blit_neon.S)
 endif()
 
 if(ANDROID)
