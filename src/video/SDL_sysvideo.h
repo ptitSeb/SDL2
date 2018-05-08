@@ -109,6 +109,11 @@ struct SDL_Window
     SDL_WindowUserData *data;
 
     void *driverdata;
+#if defined(PANDORA) || defined(CHIP)
+    int hack_size, hack_hack;
+    int hack_width, hack_height;
+    int hack_rwidth, hack_rheight;
+#endif
 
     SDL_Window *prev;
     SDL_Window *next;

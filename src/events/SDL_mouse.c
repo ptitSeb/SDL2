@@ -268,10 +268,16 @@ SDL_PrivateSendMouseMotion(SDL_Window * window, SDL_MouseID mouseID, int relativ
     int posted;
     int xrel;
     int yrel;
-
     if (mouseID == SDL_TOUCH_MOUSEID && !mouse->touch_mouse_events) {
         return 0;
     }
+
+#if defined(PANDORA) || defined(CHIP)
+        if(window->hack_size) {
+            x = (x*window->w)/window->hack_rwidth;
+            y = (y*window->h)/window->hack_rheight;
+        }
+#endif
 
     if (mouseID != SDL_TOUCH_MOUSEID && mouse->relative_mode_warp) {
         int center_x = 0, center_y = 0;
@@ -648,7 +654,7 @@ SDL_GetGlobalMouseState(int *x, int *y)
     if (!mouse->GetGlobalMouseState) {
         return 0;
     }
-
+    
     return mouse->GetGlobalMouseState(x, y);
 }
 
@@ -664,6 +670,12 @@ SDL_WarpMouseInWindow(SDL_Window * window, int x, int y)
     if (window == NULL) {
         return;
     }
+#if defined(PANDORA) || defined(CHIP)
+        if(window->hack_size) {
+            x = (x*window->hack_rwidth)/window->hack_width;
+            y = (y*window->hack_rheight)/window->hack_height;
+        }
+#endif
 
     if (mouse->WarpMouse) {
         mouse->WarpMouse(window, x, y);

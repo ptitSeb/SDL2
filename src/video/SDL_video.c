@@ -688,6 +688,15 @@ SDL_GetDisplayBounds(int displayIndex, SDL_Rect * rect)
 
         if (_this->GetDisplayBounds) {
             if (_this->GetDisplayBounds(_this, display, rect) == 0) {
+#if defined(PANDORA) || defined(CHIP)
+                if(SDL_getenv("LIBGL_FBO")) {
+                    int w, h;
+                    if(sscanf(SDL_getenv("LIBGL_FBO"), "%dx%d", &w, &h)==2) {
+                        rect->w = w; 
+                        rect->h = h;
+                    }
+                }
+#endif
                 return 0;
             }
         }
@@ -843,6 +852,15 @@ SDL_GetCurrentDisplayMode(int displayIndex, SDL_DisplayMode * mode)
     if (mode) {
         *mode = display->current_mode;
     }
+#if defined(PANDORA) || defined(CHIP)
+    if(mode && SDL_getenv("LIBGL_FBO")) {
+        int w, h;
+        if(sscanf(SDL_getenv("LIBGL_FBO"), "%dx%d", &w, &h)==2) {
+            mode->w = w; 
+            mode->h = h;
+        }
+    }
+#endif
     return 0;
 }
 
@@ -1920,6 +1938,16 @@ SDL_SetWindowSize(SDL_Window * window, int w, int h)
         SDL_InvalidParamError("h");
         return;
     }
+#if defined(PANDORA) || defined(CHIP)
+    if (window->hack_hack) {
+        if(w==window->hack_width && h==window->hack_height) {
+            window->hack_size = 1;
+            window->hack_rwidth = window->w;
+            window->hack_rheight = window->h;
+        } else
+            window->hack_size = 0;
+    }
+#endif
 
     /* Make sure we don't exceed any window size limits */
     if (window->min_w && w < window->min_w) {

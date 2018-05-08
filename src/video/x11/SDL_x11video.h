@@ -146,6 +146,11 @@ typedef struct SDL_VideoData
     void *vulkan_xlib_xcb_library;
     PFN_XGetXCBConnection vulkan_XGetXCBConnection;
 #endif
+#if defined(PANDORA) || defined(CHIP)
+    int     hack_size;
+    int     hack_width, hack_height;
+    int     hack_rwidth, hack_rheight;
+#endif
 
 } SDL_VideoData;
 

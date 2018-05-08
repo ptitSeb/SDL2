@@ -127,12 +127,28 @@ SDL_SendWindowEvent(SDL_Window * window, Uint8 windowevent, int data1,
         break;
     case SDL_WINDOWEVENT_RESIZED:
         if (!(window->flags & SDL_WINDOW_FULLSCREEN)) {
-            window->windowed.w = data1;
-            window->windowed.h = data2;
+#if defined(PANDORA) || defined(CHIP)
+            if (window->hack_size) {
+                window->windowed.w = window->hack_width;
+                window->windowed.h = window->hack_height;
+            } else
+#endif
+            {
+                window->windowed.w = data1;
+                window->windowed.h = data2;
+            }
         }
         if (data1 == window->w && data2 == window->h) {
             return 0;
         }
+#if defined(PANDORA) || defined(CHIP)
+        if (window->hack_size) {
+            window->hack_rwidth = data1;
+            window->hack_rheight = data2;
+            data1 = window->hack_width;
+            data2 = window->hack_height;
+        }
+#endif
         window->w = data1;
         window->h = data2;
         SDL_OnWindowResized(window);

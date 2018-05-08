@@ -331,6 +331,22 @@ SetupWindowData(_THIS, SDL_Window * window, Window w, BOOL created)
             /* Tell x11 to clip mouse */
         }
     }
+#if defined(PANDORA) || defined(CHIP)
+    if(SDL_getenv("LIBGL_FBO")) {
+        int hw, hh;
+        if(sscanf(SDL_getenv("LIBGL_FBO"), "%dx%d", &hw, &hh)==2) {
+            window->hack_width = hw;
+            window->hack_height = hh;
+            window->hack_hack = 1;
+            window->hack_rwidth = window->w;
+            window->hack_rheight = window->h;
+            if(window->w==hw && window->h==hh)
+                window->hack_size = 1;
+            else
+                window->hack_size = 0;
+        }
+    }
+#endif
 
     /* All done! */
     window->driverdata = data;
@@ -1038,6 +1054,12 @@ X11_ShowWindow(_THIS, SDL_Window * window)
     Display *display = data->videodata->display;
     XEvent event;
 
+#if defined(PANDORA) || defined(CHIP)
+    if(window->hack_hack) {
+        window->hack_rwidth = window->w;
+        window->hack_rheight = window->h;
+    }
+#endif
     if (!X11_IsWindowMapped(_this, window)) {
         X11_XMapRaised(display, data->xwindow);
 #ifndef PANDORA

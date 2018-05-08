@@ -467,6 +467,20 @@ X11_VideoInit(_THIS)
 #if SDL_USE_LIBDBUS
     SDL_DBus_Init();
 #endif
+#if defined(PANDORA) || defined(CHIP)
+    if(SDL_getenv("LIBGL_FBO")) {
+        int w, h;
+        if(sscanf(SDL_getenv("LIBGL_FBO"), "%dx%d", &w, &h)==2) {
+            Screen *screen;
+            data->hack_width = w; 
+            data->hack_height = h;
+            data->hack_size = 1;
+            screen = ScreenOfDisplay(data->display, 0);
+            data->hack_rwidth = screen->width;
+            data->hack_rheight = screen->height;
+        }
+    }
+#endif
 
     return 0;
 }

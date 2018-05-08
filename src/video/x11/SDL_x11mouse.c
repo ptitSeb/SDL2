@@ -332,6 +332,13 @@ X11_WarpMouse(SDL_Window * window, int x, int y)
 static int
 X11_WarpMouseGlobal(int x, int y)
 {
+#if defined(PANDORA) || defined(CHIP)
+    SDL_VideoData *videodata = (SDL_VideoData *) SDL_GetVideoDevice()->driverdata;
+    if(videodata->hack_size) {
+        x = (x*videodata->hack_rwidth)/videodata->hack_width;
+        y = (y*videodata->hack_rheight)/videodata->hack_height;
+    }
+#endif
     WarpMouseInternal(DefaultRootWindow(GetDisplay()), x, y);
     return 0;
 }
@@ -423,6 +430,12 @@ X11_GetGlobalMouseState(int *x, int *y)
 
     *x = videodata->global_mouse_position.x;
     *y = videodata->global_mouse_position.y;
+#if defined(PANDORA) || defined(CHIP)
+    if(videodata->hack_size) {
+        *x = (*x*videodata->hack_width)/videodata->hack_rwidth;
+        *y = (*y*videodata->hack_height)/videodata->hack_rheight;
+    }
+#endif
     return videodata->global_mouse_buttons;
 }
 
