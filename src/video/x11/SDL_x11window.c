@@ -1062,7 +1062,7 @@ X11_ShowWindow(_THIS, SDL_Window * window)
 #endif
     if (!X11_IsWindowMapped(_this, window)) {
         X11_XMapRaised(display, data->xwindow);
-#ifndef PANDORA
+#if 1//ndef PANDORA
         /* Blocking wait for "MapNotify" event.
          * We use X11_XIfEvent because pXWindowEvent takes a mask rather than a type,
          * and XCheckTypedWindowEvent doesn't block */
