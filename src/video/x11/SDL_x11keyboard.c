@@ -272,7 +272,7 @@ X11_InitKeyboard(_THIS)
     int best_distance;
     int best_index;
     int distance;
-    BOOL xkb_repeat = 0;
+    Bool xkb_repeat = 0;
     
     X11_XAutoRepeatOn(data->display);
 
@@ -298,9 +298,7 @@ X11_InitKeyboard(_THIS)
         char *prev_locale = setlocale(LC_ALL, NULL);
         char *prev_xmods  = X11_XSetLocaleModifiers(NULL);
         const char *new_xmods = "";
-#if defined(HAVE_IBUS_IBUS_H) || defined(HAVE_FCITX_FRONTEND_H)
         const char *env_xmods = SDL_getenv("XMODIFIERS");
-#endif
         SDL_bool has_dbus_ime_support = SDL_FALSE;
 
         if (prev_locale) {
@@ -315,16 +313,12 @@ X11_InitKeyboard(_THIS)
            when it is used via XIM which causes issues. Prevent this by forcing
            @im=none if XMODIFIERS contains @im=ibus. IBus can still be used via 
            the DBus implementation, which also has support for pre-editing. */
-#ifdef HAVE_IBUS_IBUS_H
         if (env_xmods && SDL_strstr(env_xmods, "@im=ibus") != NULL) {
             has_dbus_ime_support = SDL_TRUE;
         }
-#endif
-#ifdef HAVE_FCITX_FRONTEND_H
         if (env_xmods && SDL_strstr(env_xmods, "@im=fcitx") != NULL) {
             has_dbus_ime_support = SDL_TRUE;
         }
-#endif
         if (has_dbus_ime_support || !xkb_repeat) {
             new_xmods = "@im=none";
         }

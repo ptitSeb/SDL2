@@ -47,6 +47,12 @@
 xcuserdata
 *.xcworkspace
 
+# for VSCode
+.vscode/
+
+# for ptitSeb
+seb/
+
 # for Visual C++
 Debug
 Release
@@ -133,6 +139,7 @@ test/testresample
 test/testrumble
 test/testscale
 test/testsem
+test/testsensor
 test/testshader
 test/testshape
 test/testsprite2
