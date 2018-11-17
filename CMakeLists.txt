@@ -652,6 +652,8 @@ if(ASSEMBLY)
         list(APPEND EXTRA_CFLAGS "-mfpu=neon")
       endif()
       set(CMAKE_REQUIRED_FLAGS ${ORIG_CMAKE_REQUIRED_FLAGS})
+    else()
+     set(HAVE_NEON OFF)
     endif()
 
   elseif(MSVC_VERSION GREATER 1500)
