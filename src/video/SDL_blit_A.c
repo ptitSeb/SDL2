@@ -1373,7 +1373,7 @@ SDL_CalculateBlitA(SDL_Surface * surface)
                 if(sf->Rshift % 8 == 0
                 && sf->Gshift % 8 == 0
                 && sf->Bshift % 8 == 0
-                && sf->Ashift % 8 == 0)
+                && sf->Amask == 0xff000000)
                 {
                     return BlitARGBtoXRGBalpha_neon;
                 }
@@ -1387,7 +1387,7 @@ SDL_CalculateBlitA(SDL_Surface * surface)
             && sf->Rshift % 8 == 0 && sf->Gshift % 8 == 0 && sf->Bshift % 8 == 0
             && sf->Amask == 0xff000000)
             {
-            return BlitABGRtoXRGBalpha_neon;
+                return BlitABGRtoXRGBalpha_neon;
             }
 #endif
             return BlitNtoNPixelAlpha;

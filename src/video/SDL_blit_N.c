@@ -2604,12 +2604,12 @@ static const struct blit_table normal_blit_4[] = {
      0, Blit_RGB888_RGB555, NO_ALPHA},
 #ifdef NEON
     { 0x00FF0000,0x0000FF00,0x000000FF, 4, 0x00FF0000,0x0000FF00,0x000000FF,
-      0, BlitARGBtoXRGB_neon, NO_ALPHA | SET_ALPHA },
+      0, BlitARGBtoXRGB_neon, NO_ALPHA | COPY_ALPHA | SET_ALPHA },
     { 0x000000FF,0x0000FF00,0x00FF0000, 4, 0x00FF0000,0x0000FF00,0x000000FF,
-      0, BlitABGRtoXRGB_neon, NO_ALPHA | SET_ALPHA },
+      0, BlitABGRtoXRGB_neon, NO_ALPHA | COPY_ALPHA | SET_ALPHA },
     /* RGB->BGR is same as BGR->RGB */
     { 0x00FF0000,0x0000FF00,0x000000FF, 4, 0x000000FF,0x0000FF00,0x00FF0000,
-      0, BlitABGRtoXRGB_neon, NO_ALPHA | SET_ALPHA },
+      0, BlitABGRtoXRGB_neon, NO_ALPHA | COPY_ALPHA | SET_ALPHA },
 #endif    /* Default for 32-bit RGB source, used if no other blitter matches */
     {0, 0, 0, 0, 0, 0, 0, 0, BlitNtoN, 0}
 };

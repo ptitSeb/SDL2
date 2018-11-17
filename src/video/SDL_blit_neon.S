@@ -55,7 +55,7 @@
 .endm
 
 @ void *dst, const void *src, int count, uint global_alpha
-.macro do_argb_alpha bgr2rgb global_alpha
+.macro do_argb_alpha bgr2rgb global_alpha copy_alpha
     mov        r12, #0xff
 .if \global_alpha
     vdup.16    q11, r3
@@ -88,8 +88,22 @@
     vaddhn.i16 d5, q9, q12
     vaddhn.i16 d6, q10,q12
     vadd.i8    q2, q0
+.if \copy_alpha
+    #should be
+    #alpha is d = s + d - (s*d+255)>>8
+    #vmull.u8   q8, d3, d7
+    #vaddhn.u16 d4, q8, q12
+    #vaddl.u8   q9, d7, d3
+    #vsubw.u16  q9, d4
+    #vqmovn.u16 d7, q9
+    # but something is wrong up there
+    # so use backup solution...
+    vadd.i8    q3, q1
+.else
     vadd.i8    d6, d2
     vmov.i8    d7, d3
+.endif
+
     subs       r2, r2, #8
     blt        do_argb_finish
     vst4.8     {d4-d7}, [r0]!
@@ -254,16 +268,16 @@ func(neon_ABGRtoXRGB):
     do_argb 1
 
 func(neon_ARGBtoXRGBalpha):
-    do_argb_alpha 0, 0
+    do_argb_alpha 0, 0, 1
 
 func(neon_ABGRtoXRGBalpha):
-    do_argb_alpha 1, 0
+    do_argb_alpha 1, 0, 1
 
 func(neon_ARGBtoXRGBalphaS):
-    do_argb_alpha 0, 1
+    do_argb_alpha 0, 1, 1
 
 func(neon_ABGRtoXRGBalphaS):
-    do_argb_alpha 1, 1
+    do_argb_alpha 1, 1, 1
 
 func(neon_ARGBtoRGB565alpha):
     do_argb_to_rgb565_alpha 0, 0
