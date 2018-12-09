@@ -74,7 +74,7 @@ typedef struct
     SDL_bool cliprect_enabled;
     SDL_bool cliprect_dirty;
     SDL_Rect cliprect;
-    SDL_bool texturing;
+    GLenum texturing;
     Uint32 color;
     Uint32 clear_color;
 } GL_DrawStateCache;
@@ -1012,13 +1012,13 @@ SetDrawState(GL_RenderData *data, const SDL_RenderCommand *cmd, const GL_Shader 
         data->drawstate.shader = shader;
     }
 
-    if ((cmd->data.draw.texture != NULL) != data->drawstate.texturing) {
+    if ((cmd->data.draw.texture != NULL) || data->drawstate.texturing) {
         if (cmd->data.draw.texture == NULL) {
-            data->glDisable(data->textype);
-            data->drawstate.texturing = SDL_FALSE;
+            if(data->drawstate.texturing) data->glDisable(data->drawstate.texturing);
+            data->drawstate.texturing = 0;
         } else {
             data->glEnable(data->textype);
-            data->drawstate.texturing = SDL_TRUE;
+            data->drawstate.texturing = data->textype;
         }
     }
 }
