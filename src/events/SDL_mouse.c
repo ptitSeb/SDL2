@@ -299,7 +299,7 @@ SDL_PrivateSendMouseMotion(SDL_Window * window, SDL_MouseID mouseID, int relativ
     }
 
 #if defined(PANDORA) || defined(CHIP)
-        if(window->hack_size) {
+        if(window && window->hack_size) {
             x = (x*window->w)/window->hack_rwidth;
             y = (y*window->h)/window->hack_rheight;
         }
