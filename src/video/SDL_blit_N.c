@@ -1255,8 +1255,8 @@ static void name(SDL_BlitInfo *info) \
 	} \
 }
 
-make_neon_caller(BlitABGRtoXRGB_neon, neon_ABGRtoXRGB)
-make_neon_caller(BlitARGBtoXRGB_neon, neon_ARGBtoXRGB)
+make_neon_caller(BlitABGRtoXRGB_neon, neon_ABGRtoXRGBalphaS)
+make_neon_caller(BlitARGBtoXRGB_neon, neon_ARGBtoXRGBalphaS)
 
 #endif /* NEON */
 
