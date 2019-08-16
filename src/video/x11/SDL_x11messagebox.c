@@ -62,6 +62,11 @@ static const SDL_MessageBoxColor g_default_colors[ SDL_MESSAGEBOX_COLOR_MAX ] = 
 #define SDL_MAKE_RGB( _r, _g, _b )  ( ( ( Uint32 )( _r ) << 16 ) | \
                                       ( ( Uint32 )( _g ) << 8 ) |  \
                                       ( ( Uint32 )( _b ) ) )
+#ifdef PANDORA
+#define SDL_MAKE_RGB16(_r, _g, _b) ( ( ( Uint32 )( _r>>3) << 11 ) | \
+				     ( ( Uint32 )( _g>>2) << 5 ) | \
+				     ( ( Uint32 )( _b>>3) ) )
+#endif
 
 typedef struct SDL_MessageBoxButtonDataX11 {
     int x, y;                           /* Text position */
@@ -216,7 +221,12 @@ X11_MessageBoxInit( SDL_MessageBoxDataX11 *data, const SDL_MessageBoxData * mess
 
     /* Convert our SDL_MessageBoxColor r,g,b values to packed RGB format. */
     for ( i = 0; i < SDL_MESSAGEBOX_COLOR_MAX; i++ ) {
+#ifdef PANDORA
+        data->color[ i ] = SDL_MAKE_RGB16( colorhints[ i ].r, colorhints[ i ].g, colorhints[ i ].b );
+
+#else
         data->color[ i ] = SDL_MAKE_RGB( colorhints[ i ].r, colorhints[ i ].g, colorhints[ i ].b );
+#endif
     }
 
     return 0;
